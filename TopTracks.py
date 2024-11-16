@@ -30,14 +30,29 @@ auth = HTTPBasicAuth(client_id, client_secret)
 token_info = spotify.fetch_token(token_url, auth=auth, authorization_response=redirect_response)  #fetchtokek typically return the access toke inside the dic so thats why ie done the below step
 token = token_info['access_token']   #extracting the access token
 
+
 top_tracks_url = "https://api.spotify.com/v1/me/top/tracks"
 headers = {
     "Authorization": f"Bearer {token}" 
 }
 response = requests.get(top_tracks_url, headers=headers)
+# profile_url = "https://api.spotify.com/v1/me"
+# profile_response = requests.get(profile_url, headers=headers)
+# print(profile_response.json())
 
 #STEP:6 Using the access token
 # r = spotify.get("https://api.spotify.com/v1/me")  #contains info about the user
+if response.status_code != 200:
+    print(f"Error: {response.status_code} - {response.text}")
+    exit()
+
+try:
+    top_tracks = response.json()
+except requests.exceptions.JSONDecodeError:
+    print("Error: Failed to decode JSON response.")
+    print(f"Response Content: {response.text}")
+    exit()
+
 top_tracks = response.json()
 
 for idx, tracks in enumerate(top_tracks['items']):

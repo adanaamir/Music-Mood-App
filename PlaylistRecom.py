@@ -9,7 +9,7 @@ if os.path.exists(".cache"):
     
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
-redirect_url = "https://oauth.pstmn.io/v1/browser-callback"  
+redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
 
 scope = "playlist-read-private"
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url,scope=scope))
