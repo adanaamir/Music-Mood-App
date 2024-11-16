@@ -20,7 +20,7 @@ scope = ["user-top-read"]    #Permissions your app requests from the user
 spotify = OAuth2Session(client_id, scope=scope, redirect_uri=redirect_uri)
 
 #STEP:3 This step generates the URL to redirect the user to Spotify for login and permission approval.
-authorization_url, state = spotify.authorization_url(authorization_base_url)
+authorization_url, state = spotify.authorization_url(authorization_base_url, prompt = 'login')
 print("Please go here and authorize: ", authorization_url)
 
 #STEP:4 After the user logs in, Spotify redirects them to your redirect_url with an authorization code as a query parameter. The user then pastes the URL in exchange for an access token
