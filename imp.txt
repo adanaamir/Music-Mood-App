@@ -11,6 +11,3 @@ UTF-P:
     Why UTF-8? Computers only understand bytes (which are numbers), but humans use a wide variety of characters
     (such as English letters, Chinese characters, emojis, etc.). UTF-8 is a way to encode all these characters as 
     bytes so that computers can process them.
-
-TO GET ARTIST'S TOP TRACKS:
-    search for an artist, and then grab the id from it (required in spotifys documentation)
