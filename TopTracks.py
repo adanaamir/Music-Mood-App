@@ -19,7 +19,7 @@ scope = ["user-top-read"]    #Permissions your app requests from the user
 spotify = OAuth2Session(client_id, scope=scope, redirect_uri=redirect_uri)
 
 #STEP:3 This step generates the URL to redirect the user to Spotify for login and permission approval.
-authorization_url, state = spotify.authorization_url(authorization_base_url, prompt = 'login')
+authorization_url, _ = spotify.authorization_url(authorization_base_url, prompt = 'login')
 print("Please visit here and login: ", authorization_url)
 
 #STEP:4 After the user logs in, Spotify redirects them to your redirect_url with an authorization code as a query parameter. The user then pastes the URL in exchange for an access token
@@ -36,9 +36,6 @@ headers = {
     "Authorization": f"Bearer {token}" 
 }
 response = requests.get(top_tracks_url, headers=headers)
-# profile_url = "https://api.spotify.com/v1/me"
-# profile_response = requests.get(profile_url, headers=headers)
-# print(profile_response.json())
 
 #STEP:6 Using the access token
 # r = spotify.get("https://api.spotify.com/v1/me")  #contains info about the user
@@ -53,7 +50,13 @@ except requests.exceptions.JSONDecodeError:
     print(f"Response Content: {response.text}")
     exit()
 
+print("\nFetching users top tracks...\n")
+
 top_tracks = response.json()
 
 for idx, tracks in enumerate(top_tracks['items']):
     print(f"{idx+1}. Track Name: {tracks['name']}, Artist: {tracks['artists'][0]['name']}")
+
+if not top_tracks.get('items', []):
+        print("No data was found")
+        exit()
