@@ -1,7 +1,7 @@
 #The reason you're using dotenv here is to securely manage your credentials by storing them in a .env file,
 # rather than hardcoding them directly in your script.
 from dotenv import load_dotenv   
-import os   #os is often used for working with environment variables (here im retrieving the env variables that are loaded from your .env file) 
+import os   # os is often used for working with environment variables (here im retrieving the env variables that are loaded from your .env file) 
 import base64
 from requests import post, get
 import json
