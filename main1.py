@@ -1,7 +1,8 @@
 from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth2Session
 from dotenv import load_dotenv   
-import os 
+import os , requests
+
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ authorization_base_url = "https://accounts.spotify.com/authorize"
 token_url = "https://accounts.spotify.com/api/token"
 
 scope = [    #Permissions your app requests from the user
-    "user-read-email",
+    "user-top-read",
     "playlist-read-collaborative"
 ]
 
@@ -30,8 +31,18 @@ redirect_response = input("\n\nPaste the full redirect URL here: ")
 
 #STEP:5 Fetching the access token : in exchange with autho code from provided URL
 auth = HTTPBasicAuth(client_id, client_secret)
-token = spotify.fetch_token(token_url, auth=auth, authorization_response=redirect_response)
+token_info = spotify.fetch_token(token_url, auth=auth, authorization_response=redirect_response)  #fetchtokek typically return the access toke inside the dic so thats why ie done the below step
+token = token_info['access_token']   #extracting the access token
+
+top_tracks_url = "https://api.spotify.com/v1/me/top/tracks"
+headers = {
+    "Authorization": f"Bearer {token}" 
+}
+response = requests.get(top_tracks_url, headers=headers)
 
 #STEP:6 Using the access token
-r = spotify.get("https://api.spotify.com/v1/me")
-print(f"\n{r.content}")
+# r = spotify.get("https://api.spotify.com/v1/me")  #contains info about the user
+top_tracks = response.json()
+
+for idx, tracks in enumerate(top_tracks['items']):
+    print(f"{idx+1}. Track Name: {tracks['name']}, Artist: {tracks['artists'][0]['name']}")
