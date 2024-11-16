@@ -3,13 +3,12 @@ from requests_oauthlib import OAuth2Session
 from dotenv import load_dotenv   
 import os , requests
 
-
 load_dotenv()
 
 #STEP1: GET ENV VARIABLES 
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
-redirect_uri = "https://oauth.pstmn.io/v1/browser-callback"  #this can be any url
+redirect_uri = "https://oauth.pstmn.io/v1/browser-callback"  #this can be any url 
 
 authorization_base_url = "https://accounts.spotify.com/authorize"   #this and token_url are required necessary for OAuth
 token_url = "https://accounts.spotify.com/api/token"
@@ -21,7 +20,7 @@ spotify = OAuth2Session(client_id, scope=scope, redirect_uri=redirect_uri)
 
 #STEP:3 This step generates the URL to redirect the user to Spotify for login and permission approval.
 authorization_url, state = spotify.authorization_url(authorization_base_url, prompt = 'login')
-print("Please go here and authorize: ", authorization_url)
+print("Please visit here and login: ", authorization_url)
 
 #STEP:4 After the user logs in, Spotify redirects them to your redirect_url with an authorization code as a query parameter. The user then pastes the URL in exchange for an access token
 redirect_response = input("\n\nPaste the full redirect URL here: ")
