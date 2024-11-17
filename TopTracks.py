@@ -27,7 +27,7 @@ redirect_response = input("\n\nPaste the full redirect URL here: ")
 
 #STEP:5 Fetching the access token : in exchange with autho code from provided URL
 auth = HTTPBasicAuth(client_id, client_secret)
-token_info = spotify.fetch_token(token_url, auth=auth, authorization_response=redirect_response)  #fetchtokek typically return the access toke inside the dic so thats why ie done the below step
+token_info = spotify.fetch_token(token_url, auth=auth, authorization_response=redirect_response)  #fetchtoknk typically return the access toke inside the dic so thats why ie done the below step
 token = token_info['access_token']   #extracting the access token
 
 
