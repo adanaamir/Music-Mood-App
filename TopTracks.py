@@ -45,14 +45,14 @@ if response.status_code != 200:
 
 try:
     top_tracks = response.json()
+    
 except requests.exceptions.JSONDecodeError:
     print("Error: Failed to decode JSON response.")
     print(f"Response Content: {response.text}")
     exit()
 
 print("\nFetching users top tracks...\n")
-
-top_tracks = response.json()
+print(top_tracks)
 
 for idx, tracks in enumerate(top_tracks['items']):
     print(f"{idx+1}. Track Name: {tracks['name']}, Artist: {tracks['artists'][0]['name']}")
