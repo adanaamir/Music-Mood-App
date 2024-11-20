@@ -144,7 +144,7 @@ class TopTracks:
         except requests.exceptions.JSONDecodeError:
             print(f"\n{self.red}Error: Failed to decode the JSON response - {response.text}{self.reset}")
             exit()
-    
+
     def displayTopTracks(self):
         print("\nFetching user's top tracks", end="", flush=True)
         for _ in range(3):
