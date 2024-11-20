@@ -88,8 +88,8 @@ class PlaylistRecommendation(Credentials):
                 print("Enter a valid option")
 
     def authorization(self):
-        # if os.path.exists(".cache"):
-        #     os.remove(".cache")
+        if os.path.exists(".cache"):
+            os.remove(".cache")
 
         redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
         scope = "playlist-read-private" 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     op = choice.get_option()
 
     if op == 1:
-        # credentials = Credentials(client_id, client_secret)
+        credentials = Credentials(client_id, client_secret)
         recommend = PlaylistRecommendation(client_id, client_secret)
         recommend.enterMood()
         recommend.authorization()
