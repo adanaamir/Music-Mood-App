@@ -11,7 +11,7 @@ class UserOptions:
     def get_option(self):
         print("1. Get playlists recommended according to the mood entered\n2. Log-in to your spotify to get your top tracks displayed")
         while True:
-            try:          
+            try:
                 self.op = int(input("Please enter any option(1/2): "))
                 if self.op in [1,2]:
                     break
@@ -158,5 +158,5 @@ if __name__ == "__main__":
     elif op == 2:
         credentials = Credentials(client_id, client_secret)
         response = credentials.fetchingAccessToken()
-        top_tracks = TopTracks(client_id, client_secret, response)
+        top_tracks = TopTracks(response)
         top_tracks.displayTopTracks()
