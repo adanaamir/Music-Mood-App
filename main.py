@@ -24,22 +24,27 @@ class UserOptions:
 class Credentials:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
-        self.client_secret = client_secret    
+        self.client_secret = client_secret 
+        blue = "\033[34m"
+        self.reset = "\033[0m"  
+        self.red = "\033[31m" 
         redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
         authorization_base_url = "https://accounts.spotify.com/authorize"
         scope = ["user-top-read"]
 
         self.spotify = OAuth2Session(self.client_id, scope=scope, redirect_uri=redirect_url)
         authorization_url, _ = self.spotify.authorization_url(authorization_base_url, prompt='login')
-        print(f"\nVisit here and login: {authorization_url}")
+        print(f"\nVisit here and login: {blue}{authorization_url}{self.reset}")
 
         while True: 
             try:
                 self.redirect_response = input("\nPaste the redirect URL here: ")  
                 if self.redirect_response.startswith("https://"):
                     break
+                else:
+                    print("Incorrect URL format")
             except ValueError:
-                print("Invalid URL format. Ensure the url starts with \'https://\'")
+                print("Invalid URL format. Ensure the url starts with \"https://\"")
  
     def fetchingAccessToken(self):
         token_url = "https://accounts.spotify.com/api/token"
@@ -55,7 +60,7 @@ class Credentials:
         response = requests.get(top_tracks_url, headers=headers)
 
         if response.status_code != 200:
-            print(f"Error: {response.status_code} - {response.text}")
+            print(f"Error: {self.red}{response.status_code} - {response.text}{self.reset}")
             exit()
         
         return response
@@ -64,7 +69,7 @@ class PlaylistRecommendation:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.green = "\033[34m"
+        self.blue = "\033[34m"
         self.reset = "\033[0m"
         self.yellow = "\033[33m"
 
@@ -111,19 +116,28 @@ class PlaylistRecommendation:
         genre = mood_to_genre[self.selected_mood]
 
         sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))
-        print("\nFetching recommended playlists...\n")
+        print("\nFetching recommended playlists") #
+        for _ in range(3):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+        print()
         
         results = sp.recommendations(seed_genres=[genre],limit=10)  #fetching recommendations using the built in funtion
         
+        print()
         for idx, track in enumerate(results['tracks']):
-            print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.green}{track['external_urls']['spotify']}{self.reset}")
+            print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
 
+        #need to make a fucntion of displaying/ fetching results if use chooses to continue getting recommendations
         option = input("Type:\n\"C\" to get more recomendations \n\"E\" to exit: ").upper()
         if option == "C":
             results = sp.recommendations(seed_genres=[genre],limit=10)
             for idx, track in enumerate(results['tracks']):
-                print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.green}{track['external_urls']['spotify']}{self.reset}")
-            
+                print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
+        ##        
+
+        #add a third option where they can login
+
         elif option == "E":
             print("\nExiting the program", end="", flush=True)
             for _ in range(3):
@@ -135,7 +149,8 @@ class PlaylistRecommendation:
 class TopTracks:
     def __init__(self,response):
         self.response = response
-        self.green = "\033[34m"
+        self.red = "\033[31m"
+        self.blue = "\033[34m"
         self.reset = "\033[0m"
         self.yellow = "\033[33m"
 
@@ -159,9 +174,11 @@ class TopTracks:
             print("No data was found")
             exit()
 
+        #make a fcuntion for getting results
         for idx, track in enumerate(self.top_tracks['items']):
             print(f"{idx+1}. {self.yellow}Track Name: {track['name']}{self.reset} Artist Name: {track['artists'][0]['name']}")
 
+        #fix this typo
         option = input("Type:\n\"C\" to get more recomendations \n\"E\" to exit: ").upper()
         if option == "C":
             ...
