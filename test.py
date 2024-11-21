@@ -40,7 +40,7 @@ class Credentials:
                     break
             except ValueError:
                 print("Invalid URL format. Ensure the url starts with \'https://\'")
-
+ 
     def fetchingAccessToken(self):
         token_url = "https://accounts.spotify.com/api/token"
         top_tracks_url = "https://api.spotify.com/v1/me/top/tracks"
@@ -120,7 +120,10 @@ class PlaylistRecommendation:
 
         option = input("Type:\n\"C\" to get more recomendations \n\"E\" to exit: ").upper()
         if option == "C":
-            ...
+            results = sp.recommendations(seed_genres=[genre],limit=10)
+            for idx, track in enumerate(results['tracks']):
+                print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.green}{track['external_urls']['spotify']}{self.reset}")
+            
         elif option == "E":
             print("\nExiting the program", end="", flush=True)
             for _ in range(3):
