@@ -18,7 +18,7 @@ class UserOptions:
                 else:
                     print("Not an option. Enter a correct option(1/2)")
             except ValueError:   
-                print("Incorrect type: \"str\" entered. Enter an int.")
+                print("Incorrect \nType: \"str\" entered. Enter an int.")
         return self.op
 
 class Credentials:
@@ -66,9 +66,11 @@ class Credentials:
         return response
 
 class PlaylistRecommendation:
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret, response=None):
         self.client_id = client_id
         self.client_secret = client_secret
+        self.response = response
+        self.red = "\033[31m"
         self.blue = "\033[34m"
         self.reset = "\033[0m"
         self.yellow = "\033[33m"
@@ -113,38 +115,50 @@ class PlaylistRecommendation:
             "Angry": "metal",
             "Motivational": "work-out"
         }
-        genre = mood_to_genre[self.selected_mood]
+        self.genre = mood_to_genre[self.selected_mood]
 
-        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))
-        print("\nFetching recommended playlists") #
+        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))
+        
+        print("\nFetching recommended playlists") 
         for _ in range(3):
             time.sleep(0.5)
             print(".", end="", flush=True)
         print()
-        
-        results = sp.recommendations(seed_genres=[genre],limit=10)  #fetching recommendations using the built in funtion
-        
-        print()
-        for idx, track in enumerate(results['tracks']):
-            print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
 
-        #need to make a fucntion of displaying/ fetching results if use chooses to continue getting recommendations
-        option = input("Type:\n\"C\" to get more recomendations \n\"E\" to exit: ").upper()
-        if option == "C":
-            results = sp.recommendations(seed_genres=[genre],limit=10)
+    def displayRecommendations(self, response= None):
+        while True:
+            results = self.sp.recommendations(seed_genres=[self.genre],limit=10)  #fetching recommendations using the built in funtion
+            print()
+            
             for idx, track in enumerate(results['tracks']):
                 print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
-        ##        
 
-        #add a third option where they can login
+            try:
+                option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
+                
+                if option == "C":
+                    continue
+                    
+                elif option == "L":
+                    if response is None:
+                        print(f"{self.red}Error: No response object available.{self.reset}")
+                        break
+                    else:
+                        top_track = TopTracks(response)
+                        top_track.displayTopTracks()
+                        break
 
-        elif option == "E":
-            print("\nExiting the program", end="", flush=True)
-            for _ in range(3):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
-            exit()
+                elif option == "E":
+                    print("\nExiting the program", end="", flush=True)
+                    for _ in range(3):
+                        time.sleep(0.5)
+                        print(".", end="", flush=True)
+                    print()
+                    exit()
+                else:
+                    print("Incorrect option.")
+            except ValueError:
+                print("Incorrect \nType: \"int\" entered. Enter a str.")
 
 class TopTracks:
     def __init__(self,response):
@@ -164,31 +178,44 @@ class TopTracks:
             exit()
 
     def displayTopTracks(self):
-        print("\nFetching user's top tracks", end="", flush=True)
-        for _ in range(3):
-            time.sleep(0.5)
-            print(".", end="" ,flush=True)
-        print()
-
-        if not self.top_tracks.get('items', []):
-            print("No data was found")
-            exit()
-
-        #make a fcuntion for getting results
-        for idx, track in enumerate(self.top_tracks['items']):
-            print(f"{idx+1}. {self.yellow}Track Name: {track['name']}{self.reset} Artist Name: {track['artists'][0]['name']}")
-
-        #fix this typo
-        option = input("Type:\n\"C\" to get more recomendations \n\"E\" to exit: ").upper()
-        if option == "C":
-            ...
-        elif option == "E":
-            print("\nExiting the program", end="", flush=True)
+        while True:
+            print("\nFetching user's top tracks", end="", flush=True)
             for _ in range(3):
                 time.sleep(0.5)
-                print(".", end="", flush=True)
+                print(".", end="" ,flush=True)
             print()
-            exit()
+
+            if not self.top_tracks.get('items', []):
+                print("No data was found")
+                exit()
+
+            for idx, track in enumerate(self.top_tracks['items']):
+                print(f"{idx+1}. {self.yellow}Track Name: {track['name']}{self.reset} Artist Name: {track['artists'][0]['name']}")
+
+            try: 
+                option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"M\" enter mood: ").upper()
+                if option == "C":
+                    continue
+                
+                elif option == "M":
+                    playlist_recommendation = PlaylistRecommendation(client_id, client_secret,response)
+                    print()
+                    playlist_recommendation.enterMood()
+                    playlist_recommendation.authorization()
+                    playlist_recommendation.displayRecommendations()
+                    break
+
+                elif option == "E":
+                    print("\nExiting the program", end="", flush=True)
+                    for _ in range(3):
+                        time.sleep(0.5)
+                        print(".", end="", flush=True)
+                    print()
+                    exit()    
+                else:
+                    print("Invalid option.")
+            except ValueError:
+                    print("Incorrect \nType: \"int\" entered. Enter a str.")
 
 if __name__ == "__main__":
     load_dotenv()
@@ -206,6 +233,7 @@ if __name__ == "__main__":
         recommend = PlaylistRecommendation(client_id, client_secret)
         recommend.enterMood()
         recommend.authorization()
+        recommend.displayRecommendations()
 
     elif op == 2:
         credentials = Credentials(client_id, client_secret)
