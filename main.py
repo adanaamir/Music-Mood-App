@@ -66,7 +66,7 @@ class Credentials:
         return response
 
 class PlaylistRecommendation:
-    def __init__(self, client_id, client_secret, response=None):
+    def __init__(self, client_id, client_secret, response):
         self.client_id = client_id
         self.client_secret = client_secret
         self.response = response
@@ -96,7 +96,7 @@ class PlaylistRecommendation:
                 print(f"\nYour entered mood: {self.selected_mood}")
                 break
             else:
-                print("Enter a valid option")
+                print(f"{self.red}Enter a valid option{self.reset}")
 
     def authorization(self):
         if os.path.exists(".cache"):
@@ -125,9 +125,9 @@ class PlaylistRecommendation:
             print(".", end="", flush=True)
         print()
 
-    def displayRecommendations(self, response= None):
+    def displayRecommendations(self):
         while True:
-            results = self.sp.recommendations(seed_genres=[self.genre],limit=10)  #fetching recommendations using the built in funtion
+            results = self.sp.recommendations(seed_genres=[self.genre],limit=10)
             print()
             
             for idx, track in enumerate(results['tracks']):
@@ -137,15 +137,29 @@ class PlaylistRecommendation:
                 option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
                 
                 if option == "C":
+                    print("\nFetching more recommendtions")
+                    for _ in range(3):
+                        time.sleep(0.5)
+                        print(".", end="", flush=True)
+                    print()
                     continue
                     
                 elif option == "L":
-                    if response is None:
-                        print(f"{self.red}Error: No response object available.{self.reset}")
+                    if self.response is None:
+                        print("\nGetting the URL for log-in")
+                        for _ in range(4):
+                            time.sleep(0.5)
+                            print(".", end="", flush=True)
+                        print()
+                        credentials = Credentials(self.client_id, self.client_secret)
+                        self.response = credentials.fetchingAccessToken()
+
+                    if self.response:
+                        top_track = TopTracks(self.response)
+                        top_track.displayTopTracks()
                         break
                     else:
-                        top_track = TopTracks(response)
-                        top_track.displayTopTracks()
+                        print(f"{self.red}Error: Unable to fetch response{self.reset}")
                         break
 
                 elif option == "E":
@@ -156,7 +170,7 @@ class PlaylistRecommendation:
                     print()
                     exit()
                 else:
-                    print("Incorrect option.")
+                    print(f"{self.red}Incorrect option.{self.reset}")
             except ValueError:
                 print("Incorrect \nType: \"int\" entered. Enter a str.")
 
@@ -195,6 +209,11 @@ class TopTracks:
             try: 
                 option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"M\" enter mood: ").upper()
                 if option == "C":
+                    print("\nFetching more recommendtions")
+                    for _ in range(3):
+                        time.sleep(0.5)
+                        print(".", end="", flush=True)
+                    print()
                     continue
                 
                 elif option == "M":
@@ -225,12 +244,13 @@ if __name__ == "__main__":
     if not client_id or not client_secret:
         print("MISSING CLIENT_ID OR CLIENT_SECRET")
         exit()
-    
+
+    response = None    
     choice = UserOptions()
     op = choice.get_option()
 
     if op == 1:
-        recommend = PlaylistRecommendation(client_id, client_secret)
+        recommend = PlaylistRecommendation(client_id, client_secret, response)
         recommend.enterMood()
         recommend.authorization()
         recommend.displayRecommendations()
@@ -238,5 +258,6 @@ if __name__ == "__main__":
     elif op == 2:
         credentials = Credentials(client_id, client_secret)
         response = credentials.fetchingAccessToken()
+        print("r2", response)
         top_tracks = TopTracks(response)
         top_tracks.displayTopTracks()
