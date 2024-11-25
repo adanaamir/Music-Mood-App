@@ -9,7 +9,7 @@ class UserOptions:
         self.op = None
 
     def get_option(self):
-        print("1. Get playlists recommended according to the mood entered\n2. Log-in to your spotify to get your top tracks displayed")
+        print("1. Find Music by Mood\n2. Explore your Spotify Data")
         while True:
             try:
                 self.op = int(input("Please enter any option(1/2): "))
@@ -86,14 +86,14 @@ class PlaylistRecommendation:
             "7" : "Angry",
             "8" : "Motivational" 
         }
-        print(f"Select a mood by number")
+        print("What's your vibe today? We've got the music for it.")
         for key, val in self.moods.items():
             print(f"{key} - {val}")
         while True:
-            self.op = input("Enter mood choice(1-8): ")
+            self.op = input("Select your mood by number(1-8): ")
             if self.op in self.moods:
                 self.selected_mood = self.moods[self.op]
-                print(f"\nYour entered mood: {self.selected_mood}")
+                print(f"\nFeeling {self.selected_mood}? Lets find the perfect tracks!")
                 break
             else:
                 print(f"{self.red}Enter a valid option{self.reset}")
@@ -119,8 +119,7 @@ class PlaylistRecommendation:
 
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))
         
-        print("\nFetching recommended playlists") 
-        for _ in range(3):
+        for _ in range(4):
             time.sleep(0.5)
             print(".", end="", flush=True)
         print()
@@ -137,30 +136,12 @@ class PlaylistRecommendation:
                 option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
                 
                 if option == "C":
-                    print("\nFetching more recommendtions")
+                    print("\nGetting more recommendations")
                     for _ in range(3):
                         time.sleep(0.5)
                         print(".", end="", flush=True)
                     print()
                     continue
-                    
-                elif option == "L":
-                    if self.response is None:
-                        print("\nGetting the URL for log-in")
-                        for _ in range(4):
-                            time.sleep(0.5)
-                            print(".", end="", flush=True)
-                        print()
-                        credentials = Credentials(self.client_id, self.client_secret)
-                        self.response = credentials.fetchingAccessToken()
-
-                    if self.response:
-                        top_track = TopTracks(self.response)
-                        top_track.displayTopTracks()
-                        break
-                    else:
-                        print(f"{self.red}Error: Unable to fetch response{self.reset}")
-                        break
 
                 elif option == "E":
                     print("\nExiting the program", end="", flush=True)
@@ -174,67 +155,194 @@ class PlaylistRecommendation:
             except ValueError:
                 print("Incorrect \nType: \"int\" entered. Enter a str.")
 
-class TopTracks:
-    def __init__(self,response):
-        self.response = response
+class UserSpotifyDetails:
+    def __init__(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.red = "\033[31m"
         self.blue = "\033[34m"
         self.reset = "\033[0m"
         self.yellow = "\033[33m"
+        self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback" 
+        self.scope = (
+            "user-top-read "
+            "user-follow-read "
+            "playlist-read-private "
+            "user-read-recently-played "
+            "user-library-read "
+            "user-read-playback-state"
+            )
+        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_url, scope=self.scope))
 
-        if response.status_code != 200:
-            print(f"\n{self.red}Error: {response.status_code} - {response.text}{self.reset}")
-            exit()
-        try:
-            self.top_tracks = self.response.json()
-        except requests.exceptions.JSONDecodeError:
-            print(f"\n{self.red}Error: Failed to decode the JSON response - {response.text}{self.reset}")
-            exit()
+    def userOptions(self):
+        user_options = {
+            1: "View your top tracks.",
+            2: "View your currently followed artist.",
+            3: "View your curently followed users.",  #
+            4: "View your currently following playlist.",#
+            5: "View your recently played.",  ##
+            6: "View your top artists.",
+            7: "View your current playlists.",
+            8: "View your saved albums.",
+            9:" View your saved tracks.",  #
+            10: "View currently playing."
+        }
+        print(f"\nHi! Ready to explore your Spotify Data?\nHere's what you can do:")
+        for key, val in user_options.items():
+            print(f"{key} - {val}")
 
-    def displayTopTracks(self):
         while True:
-            print("\nFetching user's top tracks", end="", flush=True)
-            for _ in range(3):
-                time.sleep(0.5)
-                print(".", end="" ,flush=True)
-            print()
-
-            if not self.top_tracks.get('items', []):
-                print("No data was found")
-                exit()
-
-            for idx, track in enumerate(self.top_tracks['items']):
-                print(f"{idx+1}. {self.yellow}Track Name: {track['name']}{self.reset} Artist Name: {track['artists'][0]['name']}")
-
-            try: 
-                option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"M\" enter mood: ").upper()
-                if option == "C":
-                    print("\nFetching more recommendtions")
-                    for _ in range(3):
-                        time.sleep(0.5)
-                        print(".", end="", flush=True)
-                    print()
-                    continue
-                
-                elif option == "M":
-                    playlist_recommendation = PlaylistRecommendation(client_id, client_secret,response)
-                    print()
-                    playlist_recommendation.enterMood()
-                    playlist_recommendation.authorization()
-                    playlist_recommendation.displayRecommendations()
+            try:
+                self.user_op = int(input("Enter your option by number(1-10) "))
+                if self.user_op in user_options:
                     break
-
-                elif option == "E":
-                    print("\nExiting the program", end="", flush=True)
-                    for _ in range(3):
-                        time.sleep(0.5)
-                        print(".", end="", flush=True)
-                    print()
-                    exit()    
                 else:
-                    print("Invalid option.")
+                    print(f"{self.red}Error: Not an option.{self.reset}") 
             except ValueError:
-                    print("Incorrect \nType: \"int\" entered. Enter a str.")
+                print(f"{self.red}Error: Invalid type \"str\" entered. Enter an int{self.reset}")
+    
+    def userChooseOption(self):
+        while True:
+            try:
+                if self.user_op == 1:
+                    self.viewTopTracks()
+                    
+                elif self.user_op == 2:
+                    self.viewArtistsFollowed()
+                    
+                elif self.user_op == 3:
+                    self.viewUsersFollowed()
+                    
+                elif self.user_op == 4:
+                    self.viewFollowedPlaylist()
+                    
+                elif self.user_op == 5:
+                    self.viewRecentlyPlayed()
+                    
+                elif self.user_op == 6:
+                    self.viewTopTracks()
+
+                elif self.user_op == 7:
+                    self.viewCurrentPlaylists()
+
+                elif self.user_op == 8:
+                    self.viewSavedAlbums()
+
+                elif self.user_op == 9:
+                    self.viewSavedTracks()
+
+                elif self.user_op == 10:
+                    self.viewCurrentlyPlaying()
+                else:
+                    print("Not an option. Enter a valid option")
+                self.userOptions()
+            except ValueError:
+                print(f"{self.red}Error: Invalid type \"str\" entered. Enter an int")
+
+    def viewTopTracks(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        results = self.sp.current_user_top_tracks(limit=20)
+        print("Fetching your top tracks")
+        for _ in range(4):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+        print()
+        for idx, track in enumerate(results['items']):
+            print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
+
+    def viewArtistsFollowed(self):  
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        results = self.sp.current_user_followed_artists()
+        print("Fetching your atrists followed")
+        for _ in range(4):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+        print()
+        for artist in results['artists']['items']:
+            print(f"{artist['name']}")
+ 
+    def viewUsersFollowed(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_following_users()
+        print("Fetching your users followed")
+        for _ in range(4):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+        print()
+        for user in result['users']['items']:
+            print(f"{user['name']}")
+
+    def viewFollowedPlaylist(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_follow_playlist()
+        print("Fetching your followed playlist")
+        for _ in range(4):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+        print()
+        for playlist in result['items']:
+            print(f"Playlist: {playlist['name']}")
+
+    def viewRecentlyPlayed(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_recently_played(limit=1)
+        print("Fetching your recently played")
+        for _ in range(4):
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+        print()
+
+        if result['items']:
+            track = result['items'][0]['track']
+            print(f"Your recently played Track is: {track['name']} by {track['track']['artists'][0]['name']}")
+        else:
+            print("No recent tracks played")
+
+    def usersTopArtists(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_top_artists()
+        print()
+        for idx, artist in enumerate(result['items']):
+            print(f"{idx+1}. {artist['name']}")
+
+    def viewCurrentPlaylists(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_playlists()
+        print()
+        for playlist in result['items']:
+            print(f"Playlist: {playlist['name']}")
+
+    def viewSavedAlbums(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_saved_albums()
+        print()
+        for album in result['items']:
+            print(f"Album: {album['album']['name']}")
+
+    def viewSavedTracks(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        result = self.sp.current_user_saved_tracks()
+        print()
+        for idx, track in enumerate(result['users']['items']):
+            print(f"{idx+1}. {track['track']['name']} by {track['track']['artists'][0]['name']}")
+
+    def viewCurrentlyPlaying(self):
+        if os.path.exists(".cache"):
+            os.remove(".cache")
+        current_playing = self.sp.currently_playing()
+        if current_playing and current_playing['is_playing']:
+            print(f"Currently playing: {current_playing['item']['name']} by {current_playing['item']['artists'][0]['name']}")
+        else:
+            print("No track is currently playing.")
 
 if __name__ == "__main__":
     load_dotenv()
@@ -245,19 +353,18 @@ if __name__ == "__main__":
         print("MISSING CLIENT_ID OR CLIENT_SECRET")
         exit()
 
-    response = None    
     choice = UserOptions()
     op = choice.get_option()
 
     if op == 1:
+        credentials = Credentials(client_id, client_secret)
+        response = credentials.fetchingAccessToken()
         recommend = PlaylistRecommendation(client_id, client_secret, response)
         recommend.enterMood()
         recommend.authorization()
         recommend.displayRecommendations()
 
     elif op == 2:
-        credentials = Credentials(client_id, client_secret)
-        response = credentials.fetchingAccessToken()
-        print("r2", response)
-        top_tracks = TopTracks(response)
-        top_tracks.displayTopTracks()
+        user_datails = UserSpotifyDetails(client_id, client_secret)
+        user_datails.userOptions()
+        user_datails.userChooseOption()
