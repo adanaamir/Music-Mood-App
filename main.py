@@ -178,14 +178,12 @@ class UserSpotifyDetails:
         user_options = {
             1: "View your top tracks.",
             2: "View your currently followed artist.",
-            3: "View your curently followed users.",  #
-            4: "View your currently following playlist.",#
-            5: "View your recently played.",  ##
-            6: "View your top artists.",
-            7: "View your current playlists.",
-            8: "View your saved albums.",
-            9:" View your saved tracks.",  #
-            10: "View currently playing."
+            3: "View your recently played.", 
+            4: "View your top artists.",
+            5: "View your current playlists.",
+            6: "View your saved albums.",
+            7: "View your liked tracks.", 
+            8: "View currently playing."
         }
         print(f"\nHi! Ready to explore your Spotify Data?\nHere's what you can do:")
         for key, val in user_options.items():
@@ -211,27 +209,21 @@ class UserSpotifyDetails:
                     self.viewArtistsFollowed()
                     
                 elif self.user_op == 3:
-                    self.viewUsersFollowed()
-                    
-                elif self.user_op == 4:
-                    self.viewFollowedPlaylist()
-                    
-                elif self.user_op == 5:
                     self.viewRecentlyPlayed()
                     
-                elif self.user_op == 6:
-                    self.viewTopTracks()
+                elif self.user_op == 4:
+                    self.usersTopArtists()
 
-                elif self.user_op == 7:
+                elif self.user_op == 5:
                     self.viewCurrentPlaylists()
 
-                elif self.user_op == 8:
+                elif self.user_op == 6:
                     self.viewSavedAlbums()
 
-                elif self.user_op == 9:
+                elif self.user_op == 7:
                     self.viewSavedTracks()
 
-                elif self.user_op == 10:
+                elif self.user_op == 8:
                     self.viewCurrentlyPlaying()
                 else:
                     print("Not an option. Enter a valid option")
@@ -240,109 +232,120 @@ class UserSpotifyDetails:
                 print(f"{self.red}Error: Invalid type \"str\" entered. Enter an int")
 
     def viewTopTracks(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
         results = self.sp.current_user_top_tracks(limit=20)
-        print("Fetching your top tracks")
+        print("\nFetching your top tracks")
         for _ in range(4):
             time.sleep(0.5)
             print(".", end="", flush=True)
         print()
+
         for idx, track in enumerate(results['items']):
             print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
 
     def viewArtistsFollowed(self):  
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        results = self.sp.current_user_followed_artists()
-        print("Fetching your atrists followed")
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-        print()
-        for artist in results['artists']['items']:
-            print(f"{artist['name']}")
- 
-    def viewUsersFollowed(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_following_users()
-        print("Fetching your users followed")
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-        print()
-        for user in result['users']['items']:
-            print(f"{user['name']}")
+        try:
+            print("\nFetching your artists followed")
+            results = self.sp.current_user_followed_artists()
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
 
-    def viewFollowedPlaylist(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_follow_playlist()
-        print("Fetching your followed playlist")
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-        print()
-        for playlist in result['items']:
-            print(f"Playlist: {playlist['name']}")
+            for artist in results['artists']['items']:
+                print(f"{artist['name']}")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
     def viewRecentlyPlayed(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_recently_played(limit=1)
-        print("Fetching your recently played")
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-        print()
+        try:
+            print("\nFetching your recently played")
+            result = self.sp.current_user_recently_played(limit=1)
+            
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
 
-        if result['items']:
-            track = result['items'][0]['track']
-            print(f"Your recently played Track is: {track['name']} by {track['track']['artists'][0]['name']}")
-        else:
-            print("No recent tracks played")
+            if result['items']:
+                tracks = result['items'][0]['track']
+                print(f"Your recently played Track is: {self.yellow}{tracks['name']} by {tracks['artists'][0]['name']}{self.reset}")
+                
+            else:
+                print("No recent tracks played")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
     def usersTopArtists(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_top_artists()
-        print()
-        for idx, artist in enumerate(result['items']):
-            print(f"{idx+1}. {artist['name']}")
+        try:
+            print("\nFetching your top artists")
+            result = self.sp.current_user_top_artists()
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
+
+            for idx, artist in enumerate(result['items']):
+                print(f"{idx+1}. {self.yellow}{artist['name']}{self.reset}")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
     def viewCurrentPlaylists(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_playlists()
-        print()
-        for playlist in result['items']:
-            print(f"Playlist: {playlist['name']}")
+        try:
+            print("\nFetching your current playlists")
+            result = self.sp.current_user_playlists()
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
+
+            for idx, playlist in enumerate(result['items']):
+                print(f"{idx+1}. {self.yellow}{playlist['name']}{self.reset}")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
     def viewSavedAlbums(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_saved_albums()
-        print()
-        for album in result['items']:
-            print(f"Album: {album['album']['name']}")
+        try:
+            print("\nFetching your liked albums")
+            result = self.sp.current_user_saved_albums()
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
+
+            for album in result['items']:
+                print(f"- {self.yellow}{album['album']['name']}{self.reset}")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
     def viewSavedTracks(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        result = self.sp.current_user_saved_tracks()
-        print()
-        for idx, track in enumerate(result['users']['items']):
-            print(f"{idx+1}. {track['track']['name']} by {track['track']['artists'][0]['name']}")
+        try:
+            print("\nFetching your liked tracks")
+            result = self.sp.current_user_saved_tracks()
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
+
+            for idx, track in enumerate(result['items']):
+                print(f"{idx+1}. {self.yellow}{track['track']['name']}{self.reset} by {self.blue}{track['track']['artists'][0]['name']}{self.reset}")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
     def viewCurrentlyPlaying(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-        current_playing = self.sp.currently_playing()
-        if current_playing and current_playing['is_playing']:
-            print(f"Currently playing: {current_playing['item']['name']} by {current_playing['item']['artists'][0]['name']}")
-        else:
-            print("No track is currently playing.")
+        try:
+            print("\nFetching your liked tracks")
+            current_playing = self.sp.currently_playing()
+            for _ in range(4):
+                time.sleep(0.5)
+                print(".", end="", flush=True)
+            print()
+            
+            if current_playing and current_playing['is_playing']:
+                print(f"Currently playing: {self.yellow}{current_playing['item']['name']}{self.reset} by {self.blue}{current_playing['item']['artists'][0]['name']}{self.reset}")
+            else:
+                print(f"{self.yellow}No track is currently playing.{self.reset}")
+        except Exception as e:
+            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
 if __name__ == "__main__":
     load_dotenv()
