@@ -21,7 +21,7 @@ class UserOptions:
                 print("Incorrect \nType: \"str\" entered. Enter an int.")
         return self.op
 
-class Credentials:
+class Login:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret 
@@ -38,13 +38,21 @@ class Credentials:
 
         while True: 
             try:
-                self.redirect_response = input("\nPaste the redirect URL here: ")  
+                self.redirect_response = input("\nPaste the redirect URL here: ") 
+                 
                 if self.redirect_response.startswith("https://"):
                     break
                 else:
                     print("Incorrect URL format")
             except ValueError:
                 print("Invalid URL format. Ensure the url starts with \"https://\"")
+
+        print(f"\nLogging in")
+        for _ in range(3):
+            time.sleep(0.5)
+            print(".", end="",flush=True)
+        print()
+        print("\033[32mSuccessfully Logged in\033[0m")
  
     def fetchingAccessToken(self):
         token_url = "https://accounts.spotify.com/api/token"
@@ -66,7 +74,7 @@ class Credentials:
         return response
 
 class PlaylistRecommendation:
-    def __init__(self, client_id, client_secret, response):
+    def __init__(self, client_id, client_secret,response=None):
         self.client_id = client_id
         self.client_secret = client_secret
         self.response = response
@@ -74,6 +82,17 @@ class PlaylistRecommendation:
         self.blue = "\033[34m"
         self.reset = "\033[0m"
         self.yellow = "\033[33m"
+
+        self.mood_to_genre = {
+            "Happy": "pop",
+            "Sad": "folk",
+            "Chill": "chill",
+            "Peaceful": "ambient",
+            "Energetic": "dance",
+            "Focused": "study",
+            "Angry": "metal",
+            "Motivational": "workout"
+        }
 
     def enterMood(self):
         self.moods = {
@@ -86,7 +105,7 @@ class PlaylistRecommendation:
             "7" : "Angry",
             "8" : "Motivational" 
         }
-        print("What's your vibe today? We've got the music for it.")
+        print(f"\n{self.yellow}What's your vibe today? We've got the music for it.{self.reset}")
         for key, val in self.moods.items():
             print(f"{key} - {val}")
         while True:
@@ -98,35 +117,9 @@ class PlaylistRecommendation:
             else:
                 print(f"{self.red}Enter a valid option{self.reset}")
 
-    def authorization(self):
-        if os.path.exists(".cache"):
-            os.remove(".cache")
-
-        redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
-        scope = "playlist-read-private"
-
-        mood_to_genre = {
-            "Happy": "pop",
-            "Sad": "acoustic",
-            "Chill": "chill",
-            "Peaceful": "ambient",
-            "Energetic": "dance",
-            "Focused": "study",
-            "Angry": "metal",
-            "Motivational": "work-out"
-        }
-        self.genre = mood_to_genre[self.selected_mood]
-
-        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))
-        
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-        print()
-
-    def displayRecommendations(self):
+    def recommendationsLoop(self, fetch_results):
         while True:
-            results = self.sp.recommendations(seed_genres=[self.genre],limit=10)
+            results = fetch_results()
             print()
             
             for idx, track in enumerate(results['tracks']):
@@ -154,6 +147,39 @@ class PlaylistRecommendation:
                     print(f"{self.red}Incorrect option.{self.reset}")
             except ValueError:
                 print("Incorrect \nType: \"int\" entered. Enter a str.")
+
+    # def displayRecommendations(self, no_login=False):
+    #     if no_login:
+    #         self.getPublicRecommendations()
+    #     else:
+    #         self.getPersonalizedRecommendations()
+
+    def getPublicRecommendations(self):
+        self.genre = self.mood_to_genre[self.selected_mood]
+    
+        self.sp = spotipy.Spotify(client_credentials_manager=spotipy.oauth2.SpotifyClientCredentials(client_id=self.client_id, client_secret=self.client_secret))
+        # print(self.sp.recommendation_genre_seeds())
+        
+        # available_genres = self.sp.recommendation_genre_seeds()
+        # if self.genre not in available_genres['genres']:
+        #     raise ValueError(f"Genre '{self.genre}' is not valid. Choose from {available_genres['genres']}")
+        
+        def fetch_results():
+            return self.sp.recommendations(seed_genres=[self.genre], limit=10)
+        
+        self.recommendationsLoop(fetch_results)
+    
+
+    # def getPersonalizedRecommendations(self):
+    #     redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
+    #     scope = "playlist-read-private"
+    #     self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))  
+    #     self.genre = self.mood_to_genre[self.selected_mood]
+        
+    #     def fetch_results():
+    #         return self.sp.recommendations(seed_genres=[self.genre], limit=10)
+        
+    #     self.recommendationsLoop(fetch_results)
 
 class UserSpotifyDetails:
     def __init__(self, client_id, client_secret):
@@ -183,9 +209,10 @@ class UserSpotifyDetails:
             5: "View your current playlists.",
             6: "View your saved albums.",
             7: "View your liked tracks.", 
-            8: "View currently playing."
+            8: "View currently playing.",
+            9: "Logout"
         }
-        print(f"\nHi! Ready to explore your Spotify Data?\nHere's what you can do:")
+        print(f"\n{self.yellow}Hi! Ready to explore your Spotify Data?\nHere's what you can do:{self.reset}")
         for key, val in user_options.items():
             print(f"{key} - {val}")
 
@@ -225,6 +252,8 @@ class UserSpotifyDetails:
 
                 elif self.user_op == 8:
                     self.viewCurrentlyPlaying()
+                elif self.user_op == 9:
+                    logout()
                 else:
                     print("Not an option. Enter a valid option")
                 self.userOptions()
@@ -347,6 +376,24 @@ class UserSpotifyDetails:
         except Exception as e:
             print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
 
+def logout():
+    cache_path = ".cache"
+    if os.path.exists(".cache"):
+        os.remove(cache_path)
+        print("\nLogging out")
+        for _ in range(4):
+            time.sleep(0.5)
+            print(".", end="",flush=True)
+        print()
+        print(f"\033[32mSuccessfully logged out\033[0m")
+        exit()
+    else:
+        print("\n\033[33mNo account has been logged in. Please login to continue.\033[0m")
+
+    # choice = UserOptions()
+    # op = choice.get_option()
+
+
 if __name__ == "__main__":
     load_dotenv()
     client_id = os.getenv("CLIENT_ID")
@@ -360,14 +407,14 @@ if __name__ == "__main__":
     op = choice.get_option()
 
     if op == 1:
-        credentials = Credentials(client_id, client_secret)
-        response = credentials.fetchingAccessToken()
-        recommend = PlaylistRecommendation(client_id, client_secret, response)
+        recommend = PlaylistRecommendation(client_id,client_secret)
         recommend.enterMood()
-        recommend.authorization()
-        recommend.displayRecommendations()
+        # recommend.displayRecommendations()
+        recommend.getPublicRecommendations()
 
     elif op == 2:
+        credentials = Login(client_id, client_secret)
+        response = credentials.fetchingAccessToken()
         user_datails = UserSpotifyDetails(client_id, client_secret)
         user_datails.userOptions()
         user_datails.userChooseOption()
