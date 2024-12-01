@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import os, spotipy, requests, time
+import os, spotipy, time
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -27,7 +27,7 @@ class Login:
         self.client_secret = client_secret 
         redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
         authorization_base_url = "https://accounts.spotify.com/authorize"
-        scope = ["user-top-read"]
+        scope = []
 
         self.spotify = OAuth2Session(self.client_id, scope=scope, redirect_uri=redirect_url)
         authorization_url, _ = self.spotify.authorization_url(authorization_base_url, prompt='login')
