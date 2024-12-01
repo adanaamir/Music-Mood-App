@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os, spotipy, requests, time
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
-from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 
 class UserOptions:
     def __init__(self):
@@ -25,16 +25,13 @@ class Login:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret 
-        blue = "\033[34m"
-        self.reset = "\033[0m"  
-        self.red = "\033[31m" 
         redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
         authorization_base_url = "https://accounts.spotify.com/authorize"
         scope = ["user-top-read"]
 
         self.spotify = OAuth2Session(self.client_id, scope=scope, redirect_uri=redirect_url)
         authorization_url, _ = self.spotify.authorization_url(authorization_base_url, prompt='login')
-        print(f"\nVisit here and login: {blue}{authorization_url}{self.reset}")
+        print(f"\nVisit here and login: \033[34m{authorization_url}\033[0m")
 
         while True: 
             try:
@@ -56,28 +53,16 @@ class Login:
  
     def fetchingAccessToken(self):
         token_url = "https://accounts.spotify.com/api/token"
-        top_tracks_url = "https://api.spotify.com/v1/me/top/tracks"
 
         auth = HTTPBasicAuth(self.client_id, self.client_secret)
         token_info = self.spotify.fetch_token(token_url, auth=auth, authorization_response=self.redirect_response)
-        token = token_info['access_token']
-
-        headers = {
-            "Authorization": f"Bearer {token}"
-        }
-        response = requests.get(top_tracks_url, headers=headers)
-
-        if response.status_code != 200:
-            print(f"Error: {self.red}{response.status_code} - {response.text}{self.reset}")
-            exit()
-        
-        return response
+        return token_info['access_token']
 
 class PlaylistRecommendation:
-    def __init__(self, client_id, client_secret,response=None):
+    def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.response = response
+        self.sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id, client_secret))
         self.red = "\033[31m"
         self.blue = "\033[34m"
         self.reset = "\033[0m"
@@ -93,9 +78,11 @@ class PlaylistRecommendation:
             "Angry": "metal",
             "Motivational": "workout"
         }
+        
+        self.selected_mood = None
 
     def enterMood(self):
-        self.moods = {
+        moods = {
             "1" : "Happy",
             "2" : "Sad",
             "3" : "Chill",
@@ -105,90 +92,68 @@ class PlaylistRecommendation:
             "7" : "Angry",
             "8" : "Motivational" 
         }
-        print(f"\n{self.yellow}What's your vibe today? We've got the music for it.{self.reset}")
-        for key, val in self.moods.items():
+        print(f"\n\033[33mWhat's your vibe today? We've got the music for it.\033[0m")
+        for key, val in moods.items():
             print(f"{key} - {val}")
         while True:
             self.op = input("Select your mood by number(1-8): ")
-            if self.op in self.moods:
-                self.selected_mood = self.moods[self.op]
-                print(f"\nFeeling {self.selected_mood}? Lets find the perfect tracks!")
+            if self.op in moods:
+                self.selected_mood = moods[self.op]
+                print(f"\nFeeling \033[33m{self.selected_mood}\033[0m? Lets find the perfect tracks!")
                 break
             else:
-                print(f"{self.red}Enter a valid option{self.reset}")
-
-    def recommendationsLoop(self, fetch_results):
-        while True:
-            results = fetch_results()
-            print()
-            
-            for idx, track in enumerate(results['tracks']):
-                print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
-
-            try:
-                option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
-                
-                if option == "C":
-                    print("\nGetting more recommendations")
-                    for _ in range(3):
-                        time.sleep(0.5)
-                        print(".", end="", flush=True)
-                    print()
-                    continue
-
-                elif option == "E":
-                    print("\nExiting the program", end="", flush=True)
-                    for _ in range(3):
-                        time.sleep(0.5)
-                        print(".", end="", flush=True)
-                    print()
-                    exit()
-                else:
-                    print(f"{self.red}Incorrect option.{self.reset}")
-            except ValueError:
-                print("Incorrect \nType: \"int\" entered. Enter a str.")
-
-    # def displayRecommendations(self, no_login=False):
-    #     if no_login:
-    #         self.getPublicRecommendations()
-    #     else:
-    #         self.getPersonalizedRecommendations()
+                print(f"\033[31mEnter a valid option\033[0m")
 
     def getPublicRecommendations(self):
-        self.genre = self.mood_to_genre[self.selected_mood]
-    
-        self.sp = spotipy.Spotify(client_credentials_manager=spotipy.oauth2.SpotifyClientCredentials(client_id=self.client_id, client_secret=self.client_secret))
-        # print(self.sp.recommendation_genre_seeds())
+        if self.selected_mood is None:
+            raise ValueError(f"\033[31mError: No mood selected\033[0m")
         
-        # available_genres = self.sp.recommendation_genre_seeds()
-        # if self.genre not in available_genres['genres']:
-        #     raise ValueError(f"Genre '{self.genre}' is not valid. Choose from {available_genres['genres']}")
+        genre = self.mood_to_genre[self.selected_mood]
         
-        def fetch_results():
-            return self.sp.recommendations(seed_genres=[self.genre], limit=10)
-        
-        self.recommendationsLoop(fetch_results)
-    
+        # available_genres = self.sp.recommendation_genre_seeds()['genres']
+        # print(f"Available genres: {available_genres}")
 
-    # def getPersonalizedRecommendations(self):
-    #     redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
-    #     scope = "playlist-read-private"
-    #     self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_url ,scope=scope))  
-    #     self.genre = self.mood_to_genre[self.selected_mood]
+        # if genre not in available_genres:
+        #     raise ValueError(f"\033[31mGenre '{genre}' is not valid. Choose from {available_genres}\033[0m")
+        try:
+            results = self.sp.recommendations(seed_genres=[genre], limit=10)
+            if 'tracks' not in results:
+                raise ValueError(f"\033[31mError: No tracks found for genre '{genre}'\033[0m")
         
-    #     def fetch_results():
-    #         return self.sp.recommendations(seed_genres=[self.genre], limit=10)
-        
-    #     self.recommendationsLoop(fetch_results)
+            print("\nHere are some tracks for your vibe:")
+            while True:
+                for idx, track in enumerate(results['tracks']):
+                    print(f"{idx+1} Track: \033[33m{track['name']}\033[0m by {track['artists'][0]['name']}, URL: \033[34m{track['external_urls']['spotify']}\033[0m")
+
+                try:
+                    option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
+                    
+                    if option == "C":
+                        print("\nGetting more recommendations")
+                        for _ in range(3):
+                            time.sleep(0.5)
+                            print(".", end="", flush=True)
+                        print()
+                        continue
+
+                    elif option == "E":
+                        print("\nExiting the program", end="", flush=True)
+                        for _ in range(3):
+                            time.sleep(0.5)
+                            print(".", end="", flush=True)
+                        print()
+                        exit()
+                    else:
+                        print(f"\033[31mIncorrect option.\033[0m")
+                except ValueError:
+                    print("Incorrect \nType: \"int\" entered. Enter a str.")
+        except Exception as e:
+            print(f"\033[31m{e}\033[0m")
 
 class UserSpotifyDetails:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret
-        self.red = "\033[31m"
-        self.blue = "\033[34m"
-        self.reset = "\033[0m"
-        self.yellow = "\033[33m"
         self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback" 
         self.scope = (
             "user-top-read "
@@ -212,7 +177,7 @@ class UserSpotifyDetails:
             8: "View currently playing.",
             9: "Logout"
         }
-        print(f"\n{self.yellow}Hi! Ready to explore your Spotify Data?\nHere's what you can do:{self.reset}")
+        print(f"\n\033[33mHi! Ready to explore your Spotify Data?\nHere's what you can do:\033[0m")
         for key, val in user_options.items():
             print(f"{key} - {val}")
 
@@ -222,9 +187,9 @@ class UserSpotifyDetails:
                 if self.user_op in user_options:
                     break
                 else:
-                    print(f"{self.red}Error: Not an option.{self.reset}") 
+                    print(f"\033[31mError: Not an option.\033[0m") 
             except ValueError:
-                print(f"{self.red}Error: Invalid type \"str\" entered. Enter an int{self.reset}")
+                print(f"\033[31mError: Invalid type \"str\" entered. Enter an int\033[0m")
     
     def userChooseOption(self):
         while True:
@@ -258,7 +223,7 @@ class UserSpotifyDetails:
                     print("Not an option. Enter a valid option")
                 self.userOptions()
             except ValueError:
-                print(f"{self.red}Error: Invalid type \"str\" entered. Enter an int")
+                print(f"\033[31mError: Invalid type \"str\" entered. Enter an int")
 
     def viewTopTracks(self):
         results = self.sp.current_user_top_tracks(limit=20)
@@ -269,7 +234,7 @@ class UserSpotifyDetails:
         print()
 
         for idx, track in enumerate(results['items']):
-            print(f"{idx+1} Track: {self.yellow}{track['name']}{self.reset} by {track['artists'][0]['name']}, URL: {self.blue}{track['external_urls']['spotify']}{self.reset}")
+            print(f"{idx+1} Track: \033[33m{track['name']}\033[0m by {track['artists'][0]['name']}, URL: \033[34m{track['external_urls']['spotify']}\033[0m")
 
     def viewArtistsFollowed(self):  
         try:
@@ -283,7 +248,7 @@ class UserSpotifyDetails:
             for artist in results['artists']['items']:
                 print(f"{artist['name']}")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def viewRecentlyPlayed(self):
         try:
@@ -297,12 +262,12 @@ class UserSpotifyDetails:
 
             if result['items']:
                 tracks = result['items'][0]['track']
-                print(f"Your recently played Track is: {self.yellow}{tracks['name']} by {tracks['artists'][0]['name']}{self.reset}")
+                print(f"Your recently played Track is: \033[33m{tracks['name']} by {tracks['artists'][0]['name']}\033[0m")
                 
             else:
                 print("No recent tracks played")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def usersTopArtists(self):
         try:
@@ -314,9 +279,9 @@ class UserSpotifyDetails:
             print()
 
             for idx, artist in enumerate(result['items']):
-                print(f"{idx+1}. {self.yellow}{artist['name']}{self.reset}")
+                print(f"{idx+1}. \033[33m{artist['name']}\033[0m")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def viewCurrentPlaylists(self):
         try:
@@ -328,9 +293,9 @@ class UserSpotifyDetails:
             print()
 
             for idx, playlist in enumerate(result['items']):
-                print(f"{idx+1}. {self.yellow}{playlist['name']}{self.reset}")
+                print(f"{idx+1}. \033[33m{playlist['name']}\033[0m")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def viewSavedAlbums(self):
         try:
@@ -342,9 +307,9 @@ class UserSpotifyDetails:
             print()
 
             for album in result['items']:
-                print(f"- {self.yellow}{album['album']['name']}{self.reset}")
+                print(f"- \033[33m{album['album']['name']}\033[0m")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def viewSavedTracks(self):
         try:
@@ -356,13 +321,13 @@ class UserSpotifyDetails:
             print()
 
             for idx, track in enumerate(result['items']):
-                print(f"{idx+1}. {self.yellow}{track['track']['name']}{self.reset} by {self.blue}{track['track']['artists'][0]['name']}{self.reset}")
+                print(f"{idx+1}. \033[33m{track['track']['name']}\033[0m by \033[34m{track['track']['artists'][0]['name']}\033[0m")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def viewCurrentlyPlaying(self):
         try:
-            print("\nFetching your liked tracks")
+            print("\nFetching your currently playing track")
             current_playing = self.sp.currently_playing()
             for _ in range(4):
                 time.sleep(0.5)
@@ -370,11 +335,11 @@ class UserSpotifyDetails:
             print()
             
             if current_playing and current_playing['is_playing']:
-                print(f"Currently playing: {self.yellow}{current_playing['item']['name']}{self.reset} by {self.blue}{current_playing['item']['artists'][0]['name']}{self.reset}")
+                print(f"Currently playing: \033[33m{current_playing['item']['name']}\033[0m by \033[34m{current_playing['item']['artists'][0]['name']}\033[0m")
             else:
-                print(f"{self.yellow}No track is currently playing.{self.reset}")
+                print(f"\033[33mNo track is currently playing.\033[0m")
         except Exception as e:
-            print(f"{self.red}An Error occured while fetching followed artists {e}{self.reset}")
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
 def logout():
     cache_path = ".cache"
@@ -389,10 +354,6 @@ def logout():
         exit()
     else:
         print("\n\033[33mNo account has been logged in. Please login to continue.\033[0m")
-
-    # choice = UserOptions()
-    # op = choice.get_option()
-
 
 if __name__ == "__main__":
     load_dotenv()
@@ -409,7 +370,6 @@ if __name__ == "__main__":
     if op == 1:
         recommend = PlaylistRecommendation(client_id,client_secret)
         recommend.enterMood()
-        # recommend.displayRecommendations()
         recommend.getPublicRecommendations()
 
     elif op == 2:
