@@ -63,10 +63,11 @@ class PlaylistRecommendation:
         self.client_id = client_id
         self.client_secret = client_secret
         self.sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id, client_secret))
-        self.red = "\033[31m"
-        self.blue = "\033[34m"
-        self.reset = "\033[0m"
-        self.yellow = "\033[33m"
+        try:
+            available_genres = self.sp.recommendations_available_genre_seeds()['genres']
+            print(f"Available genres: {available_genres}")
+        except Exception as e:
+            print(f"\033[31m{e}\033[0m")
 
         self.mood_to_genre = {
             "Happy": "pop",
@@ -78,7 +79,6 @@ class PlaylistRecommendation:
             "Angry": "metal",
             "Motivational": "workout"
         }
-        
         self.selected_mood = None
 
     def enterMood(self):
@@ -103,18 +103,18 @@ class PlaylistRecommendation:
                 break
             else:
                 print(f"\033[31mEnter a valid option\033[0m")
-
+        
     def getPublicRecommendations(self):
         if self.selected_mood is None:
             raise ValueError(f"\033[31mError: No mood selected\033[0m")
         
         genre = self.mood_to_genre[self.selected_mood]
         
-        # available_genres = self.sp.recommendation_genre_seeds()['genres']
-        # print(f"Available genres: {available_genres}")
+        available_genres = self.sp.recommendation_genre_seeds()['genres']
+        print(f"Available genres: {available_genres}")
 
-        # if genre not in available_genres:
-        #     raise ValueError(f"\033[31mGenre '{genre}' is not valid. Choose from {available_genres}\033[0m")
+        if genre not in available_genres:
+            raise ValueError(f"\033[31mGenre '{genre}' is not valid. Choose from {available_genres}\033[0m")
         try:
             results = self.sp.recommendations(seed_genres=[genre], limit=10)
             if 'tracks' not in results:
@@ -152,6 +152,7 @@ class PlaylistRecommendation:
 
 class UserSpotifyDetails:
     def __init__(self, client_id, client_secret):
+        # self.sp = sp
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback" 
@@ -374,7 +375,7 @@ if __name__ == "__main__":
 
     elif op == 2:
         credentials = Login(client_id, client_secret)
-        response = credentials.fetchingAccessToken()
+        access_token = credentials.fetchingAccessToken()
         user_datails = UserSpotifyDetails(client_id, client_secret)
         user_datails.userOptions()
         user_datails.userChooseOption()
