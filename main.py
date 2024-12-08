@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import os, spotipy, time, requests
+import os, spotipy, time, requests, random
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
 from spotipy.oauth2 import SpotifyOAuth
@@ -31,7 +31,7 @@ class Login:
 
     def autheticate_user(self):
         auth_url, _ = self.spotify.authorization_url(self.authorization_base_url, prompt='login')
-        print(f"\nVisit here and login: \033[34m{auth_url}\033[0m")
+        print(f"\nVisit this URL to login: \033[34m{auth_url}\033[0m")
 
         while True: 
             try:
@@ -117,11 +117,13 @@ class PlaylistRecommendation:
         if genre is None or genre not in self.genres:
             raise ValueError(f"\033[31mError: No genre mapped for the mood: {self.selected_mood}\033[0m")
 
+        offset = random.randint(0, 100)
         search_url = f"https://api.spotify.com/v1/search"
         params = {
             "q": f"genre: {genre}",
             "type": "track",
-            "limit": 10
+            "limit": 10,
+            "offset": offset
         }
         headers = {"Authorization": f"Bearer {self.access_token}"}
 
@@ -145,34 +147,38 @@ class PlaylistRecommendation:
         except requests.exceptions.RequestException as e:
             raise ValueError(f"\033[31mError with request: {e}\033[0m")
         
-        try:
-            option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
-                    
-            if option == "C":
-                print("\nGetting more recommendations")
-                for _ in range(3):
-                    time.sleep(0.5)
-                    print(".", end="", flush=True)
+        while True:
+            try:
+                option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"M\" to change mood: ").upper()
+                        
+                if option == "C":
+                    print("\nGetting more recommendations")
+                    for _ in range(4):
+                        time.sleep(0.5)
+                        print(".", end="",flush=True)
                     print()
-                    continue
+                    self.getPublicRecommendations()
 
-            elif option == "E":
-                print("\nExiting the program", end="", flush=True)
-                for _ in range(3):
-                    time.sleep(0.5)
-                    print(".", end="", flush=True)
+                elif option == "E":
+                    print("\nExiting the program")
+                    for _ in range(4):
+                        time.sleep(0.5)
+                        print(".", end="",flush=True)
                     print()
                     exit()
-            else:
-                print(f"\033[31mIncorrect option.\033[0m")
-        except Exception as e:
-            print(f"\033[31m{e}\033[0m")
+
+                elif option == "M":
+                    self.enterMood()
+                    self.getPublicRecommendations()
+                else:
+                    print(f"\033[31mIncorrect option.\033[0m")
+            except Exception as e:
+                print(f"\033[31m{e}\033[0m")
 
 class UserSpotifyDetails:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret
-        # self.access_token = access_token
         self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback" 
         self.scope = (
             "user-top-read "
@@ -246,38 +252,32 @@ class UserSpotifyDetails:
 
     def viewTopTracks(self):
         results = self.sp.current_user_top_tracks(limit=20)
-        print("\nFetching your top tracks")
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="", flush=True)
-        print()
 
-        for idx, track in enumerate(results['items']):
-            print(f"{idx+1} Track: \033[33m{track['name']}\033[0m by {track['artists'][0]['name']}, URL: \033[34m{track['external_urls']['spotify']}\033[0m")
+        if results:
+            print("\nFetching your top tracks...")
+            for idx, track in enumerate(results['items']):
+                print(f"{idx+1} Track: \033[33m{track['name']}\033[0m by {track['artists'][0]['name']}, URL: \033[34m{track['external_urls']['spotify']}\033[0m")
+        else:
+            print("User has no top tracks.")
 
     def viewArtistsFollowed(self):  
         try:
-            print("\nFetching your artists followed")
+            print("\nFetching your artists followed...")
             results = self.sp.current_user_followed_artists()
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
 
-            for artist in results['artists']['items']:
-                print(f"{artist['name']}")
+            if results:
+                for artist in results['artists']['items']:
+                    print(f"{artist['name']}")
+            else:
+                print("User follows no artists.")
         except Exception as e:
             print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+                
 
     def viewRecentlyPlayed(self):
         try:
-            print("\nFetching your recently played")
+            print("\nFetching your recently played...")
             result = self.sp.current_user_recently_played(limit=1)
-            
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
 
             if result['items']:
                 tracks = result['items'][0]['track']
@@ -290,12 +290,8 @@ class UserSpotifyDetails:
 
     def usersTopArtists(self):
         try:
-            print("\nFetching your top artists")
+            print("\nFetching your top artists...")
             result = self.sp.current_user_top_artists()
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
 
             for idx, artist in enumerate(result['items']):
                 print(f"{idx+1}. \033[33m{artist['name']}\033[0m")
@@ -304,12 +300,8 @@ class UserSpotifyDetails:
 
     def viewCurrentPlaylists(self):
         try:
-            print("\nFetching your current playlists")
+            print("\nFetching your current playlists...")
             result = self.sp.current_user_playlists()
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
 
             for idx, playlist in enumerate(result['items']):
                 print(f"{idx+1}. \033[33m{playlist['name']}\033[0m")
@@ -318,12 +310,8 @@ class UserSpotifyDetails:
 
     def viewSavedAlbums(self):
         try:
-            print("\nFetching your liked albums")
+            print("\nFetching your liked albums...")
             result = self.sp.current_user_saved_albums()
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
 
             for album in result['items']:
                 print(f"- \033[33m{album['album']['name']}\033[0m")
@@ -332,26 +320,21 @@ class UserSpotifyDetails:
 
     def viewSavedTracks(self):
         try:
-            print("\nFetching your liked tracks")
+            print("\nFetching your liked tracks...")
             result = self.sp.current_user_saved_tracks()
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
 
-            for idx, track in enumerate(result['items']):
-                print(f"{idx+1}. \033[33m{track['track']['name']}\033[0m by \033[34m{track['track']['artists'][0]['name']}\033[0m")
+            if result:
+                for idx, track in enumerate(result['items']):
+                    print(f"{idx+1}. \033[33m{track['track']['name']}\033[0m by \033[34m{track['track']['artists'][0]['name']}\033[0m")
+            else:
+                print("User has no top tracks.")
         except Exception as e:
             print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
 
     def viewCurrentlyPlaying(self):
         try:
-            print("\nFetching your currently playing track")
+            print("\nFetching your currently playing track...")
             current_playing = self.sp.currently_playing()
-            for _ in range(4):
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-            print()
             
             if current_playing and current_playing['is_playing']:
                 print(f"Currently playing: \033[33m{current_playing['item']['name']}\033[0m by \033[34m{current_playing['item']['artists'][0]['name']}\033[0m")
