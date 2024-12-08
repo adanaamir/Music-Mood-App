@@ -345,7 +345,7 @@ class UserSpotifyDetails:
 
 def logout():
     cache_path = ".cache"
-    if os.path.exists(".cache"):
+    if os.path.exists(cache_path):
         os.remove(cache_path)
         print("\nLogging out")
         for _ in range(4):
@@ -355,7 +355,7 @@ def logout():
         print(f"\033[32mSuccessfully logged out\033[0m")
         exit()
     else:
-        print("\n\033[33mNo account has been logged in. Please login to continue.\033[0m")
+        print(f"\n\033[31mNo account has been logged in. Please login to continue.\033[0m")
 
 if __name__ == "__main__":
     load_dotenv()
