@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
-import os, spotipy, time
+import os, spotipy, time, requests
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
-from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
 
 class UserOptions:
     def __init__(self):
@@ -25,18 +25,18 @@ class Login:
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret 
-        redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
-        authorization_base_url = "https://accounts.spotify.com/authorize"
-        scope = []
+        self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
+        self.authorization_base_url = "https://accounts.spotify.com/authorize"
+        self.spotify = OAuth2Session(self.client_id, scope=[], redirect_uri=self.redirect_url)
 
-        self.spotify = OAuth2Session(self.client_id, scope=scope, redirect_uri=redirect_url)
-        authorization_url, _ = self.spotify.authorization_url(authorization_base_url, prompt='login')
-        print(f"\nVisit here and login: \033[34m{authorization_url}\033[0m")
+    def autheticate_user(self):
+        auth_url, _ = self.spotify.authorization_url(self.authorization_base_url, prompt='login')
+        print(f"\nVisit here and login: \033[34m{auth_url}\033[0m")
 
         while True: 
             try:
                 self.redirect_response = input("\nPaste the redirect URL here: ") 
-                 
+
                 if self.redirect_response.startswith("https://"):
                     break
                 else:
@@ -52,22 +52,26 @@ class Login:
         print("\033[32mSuccessfully Logged in\033[0m")
  
     def fetchingAccessToken(self):
-        token_url = "https://accounts.spotify.com/api/token"
+        if self.redirect_response:
+            token_url = "https://accounts.spotify.com/api/token"
+            auth = HTTPBasicAuth(self.client_id, self.client_secret)
+            self.token_info = self.spotify.fetch_token(token_url, auth=auth, authorization_response=self.redirect_response)
+        else:
+            raise ValueError(f"\033[31mError: Token not found\033[0m")
 
-        auth = HTTPBasicAuth(self.client_id, self.client_secret)
-        token_info = self.spotify.fetch_token(token_url, auth=auth, authorization_response=self.redirect_response)
-        return token_info['access_token']
+        if self.token_info:
+            return self.token_info['access_token']
+        else:
+            raise ValueError(f"\033[31mError: No token has been fetched. Please Login...\033[0m")
 
 class PlaylistRecommendation:
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret, access_token):
+        self.access_token = access_token
         self.client_id = client_id
         self.client_secret = client_secret
-        self.sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id, client_secret))
-        try:
-            available_genres = self.sp.recommendations_available_genre_seeds()['genres']
-            print(f"Available genres: {available_genres}")
-        except Exception as e:
-            print(f"\033[31m{e}\033[0m")
+        self.genres = [
+            "pop", "folk", "chill", "ambient", "dance", "study", "metal", "workout", "rock", "hiphop" 
+        ]
 
         self.mood_to_genre = {
             "Happy": "pop",
@@ -103,58 +107,72 @@ class PlaylistRecommendation:
                 break
             else:
                 print(f"\033[31mEnter a valid option\033[0m")
-        
+
     def getPublicRecommendations(self):
         if self.selected_mood is None:
             raise ValueError(f"\033[31mError: No mood selected\033[0m")
         
-        genre = self.mood_to_genre[self.selected_mood]
-        
-        available_genres = self.sp.recommendation_genre_seeds()['genres']
-        print(f"Available genres: {available_genres}")
+        genre = self.mood_to_genre.get(self.selected_mood, None)
 
-        if genre not in available_genres:
-            raise ValueError(f"\033[31mGenre '{genre}' is not valid. Choose from {available_genres}\033[0m")
+        if genre is None or genre not in self.genres:
+            raise ValueError(f"\033[31mError: No genre mapped for the mood: {self.selected_mood}\033[0m")
+
+        search_url = f"https://api.spotify.com/v1/search"
+        params = {
+            "q": f"genre: {genre}",
+            "type": "track",
+            "limit": 10
+        }
+        headers = {"Authorization": f"Bearer {self.access_token}"}
+
         try:
-            results = self.sp.recommendations(seed_genres=[genre], limit=10)
-            if 'tracks' not in results:
-                raise ValueError(f"\033[31mError: No tracks found for genre '{genre}'\033[0m")
-        
-            print("\nHere are some tracks for your vibe:")
-            while True:
-                for idx, track in enumerate(results['tracks']):
-                    print(f"{idx+1} Track: \033[33m{track['name']}\033[0m by {track['artists'][0]['name']}, URL: \033[34m{track['external_urls']['spotify']}\033[0m")
+            response = requests.get(search_url, headers=headers, params=params)
 
-                try:
-                    option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
+            if response.status_code == 200:
+                results= response.json()
+                tracks = results.get('tracks', {}).get('items', [])
+
+                if not tracks:
+                    raise ValueError(f"\033[31mError: No tracks found for genre '{genre}'\033[0m")
                     
-                    if option == "C":
-                        print("\nGetting more recommendations")
-                        for _ in range(3):
-                            time.sleep(0.5)
-                            print(".", end="", flush=True)
-                        print()
-                        continue
+                print("\nHere are some tracks for your vibe:")
+                for idx, track in enumerate(tracks):
+                    print(f"{idx+1}. Track: \033[33m{track['name']}\033[0m by {track['artists'][0]['name']}, URL: \033[34m{track['external_urls']['spotify']}\033[0m")
 
-                    elif option == "E":
-                        print("\nExiting the program", end="", flush=True)
-                        for _ in range(3):
-                            time.sleep(0.5)
-                            print(".", end="", flush=True)
-                        print()
-                        exit()
-                    else:
-                        print(f"\033[31mIncorrect option.\033[0m")
-                except ValueError:
-                    print("Incorrect \nType: \"int\" entered. Enter a str.")
+            else:
+                raise ValueError(f"\033[31mError fetching genres: {response.status_code}\033[0m")
+            
+        except requests.exceptions.RequestException as e:
+            raise ValueError(f"\033[31mError with request: {e}\033[0m")
+        
+        try:
+            option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"L\" login to spotify: ").upper()
+                    
+            if option == "C":
+                print("\nGetting more recommendations")
+                for _ in range(3):
+                    time.sleep(0.5)
+                    print(".", end="", flush=True)
+                    print()
+                    continue
+
+            elif option == "E":
+                print("\nExiting the program", end="", flush=True)
+                for _ in range(3):
+                    time.sleep(0.5)
+                    print(".", end="", flush=True)
+                    print()
+                    exit()
+            else:
+                print(f"\033[31mIncorrect option.\033[0m")
         except Exception as e:
             print(f"\033[31m{e}\033[0m")
 
 class UserSpotifyDetails:
     def __init__(self, client_id, client_secret):
-        # self.sp = sp
         self.client_id = client_id
         self.client_secret = client_secret
+        # self.access_token = access_token
         self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback" 
         self.scope = (
             "user-top-read "
@@ -365,17 +383,19 @@ if __name__ == "__main__":
         print("MISSING CLIENT_ID OR CLIENT_SECRET")
         exit()
 
+    credentials = Login(client_id, client_secret)
+    credentials.autheticate_user()
+    access_token = credentials.fetchingAccessToken()
+
     choice = UserOptions()
     op = choice.get_option()
 
     if op == 1:
-        recommend = PlaylistRecommendation(client_id,client_secret)
+        recommend = PlaylistRecommendation(client_id,client_secret, access_token)
         recommend.enterMood()
         recommend.getPublicRecommendations()
 
     elif op == 2:
-        credentials = Login(client_id, client_secret)
-        access_token = credentials.fetchingAccessToken()
         user_datails = UserSpotifyDetails(client_id, client_secret)
         user_datails.userOptions()
         user_datails.userChooseOption()
