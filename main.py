@@ -149,7 +149,7 @@ class PlaylistRecommendation:
         
         while True:
             try:
-                option = input("\nType:\n\"C\" to get more recomendations \n\"E\" to exit \n\"M\" to change mood: ").upper()
+                option = input("\nType:\n\"C\" to get more recommendations \n\"E\" to exit \n\"M\" to change mood \n\"S\" to view your Spotify details:\n").upper()
                         
                 if option == "C":
                     print("\nGetting more recommendations")
@@ -158,6 +158,11 @@ class PlaylistRecommendation:
                         print(".", end="",flush=True)
                     print()
                     self.getPublicRecommendations()
+
+                elif option == "S":
+                    user_det = UserSpotifyDetails(client_id, client_secret)
+                    user_det.userOptions()
+                    user_det.userChooseOption()
 
                 elif option == "E":
                     print("\nExiting the program")
@@ -200,7 +205,8 @@ class UserSpotifyDetails:
             6: "View your saved albums.",
             7: "View your liked tracks.", 
             8: "View currently playing.",
-            9: "Logout"
+            9: "Logout",
+            10: "Find music by mood"
         }
         print(f"\n\033[33mHi! Ready to explore your Spotify Data?\nHere's what you can do:\033[0m")
         for key, val in user_options.items():
@@ -244,6 +250,11 @@ class UserSpotifyDetails:
                     self.viewCurrentlyPlaying()
                 elif self.user_op == 9:
                     logout()
+                elif self.user_op == 10:
+                    user_rec = PlaylistRecommendation(client_id, client_secret, access_token)
+                    user_rec.enterMood()
+                    user_rec.getPublicRecommendations()
+                    
                 else:
                     print("Not an option. Enter a valid option")
                 self.userOptions()
