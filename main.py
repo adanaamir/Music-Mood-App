@@ -3,16 +3,6 @@ import os, spotipy, time, requests, random
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
 from spotipy.oauth2 import SpotifyOAuth
-import tkinter as tk
-
-window = tk.Tk()
-window.title("MUSIC MOOD APP")
-
-def loadScreen():
-    loading_screen = tk.Label(window, text = "loading...").pack()
-    window.after(2000, main)
-    
-get_started_button = tk.Button(window, text="Get Started!", command=loadScreen)
 
 class UserOptions:
     def __init__(self):
@@ -378,7 +368,7 @@ def logout():
     else:
         print(f"\n\033[31mNo account has been logged in. Please login to continue.\033[0m")
 
-def main():
+if __name__ == "__main__":
     load_dotenv()
     client_id = os.getenv("CLIENT_ID")
     client_secret = os.getenv("CLIENT_SECRET")
@@ -403,5 +393,3 @@ def main():
         user_datails = UserSpotifyDetails(client_id, client_secret)
         user_datails.userOptions()
         user_datails.userChooseOption()
-        
-window.mainloop()
