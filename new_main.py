@@ -1,31 +1,52 @@
 from dotenv import load_dotenv
-import os, spotipy, time, requests, random, webbrowser
+import os, spotipy, requests, random, webbrowser, ctypes
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
 from spotipy.oauth2 import SpotifyOAuth
-import tkinter as tk
+import tkinter as tk 
+from tkinter import messagebox
+import tkinter.font as tkFont
+from PIL import Image, ImageTk
+
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 window = tk.Tk()
 window.title("MUSIC MOOD APP")
 
 window.geometry("1000x600")
+window.configure(background="#003841")
+
+canvas_section = tk.Canvas(window, width=1000, height=600, bg="#003841", highlightthickness=0)
+canvas_section.pack(fill="both", expand=True)
+canvas_section.create_rectangle(0, 0, 2000, 65, fill="#001c21")
+
+dashboard_icon = "dashboard.png"
+dash_image = Image.open(dashboard_icon)
+dash_image = dash_image.resize((50,50))
+dash_photo = ImageTk.PhotoImage(dash_image)
+
+canvas_section.create_image(1800,10, image=dash_photo, anchor=tk.NW)
 
 def showWelcomeScreen():
     clear_window()
-    welcome_label = tk.Label(window, text = "WELCOME TO THE MUSIC MOOD APP.", font=("Times New Roman", 16))
-    welcome_label.place(x=50, y=30)
-    
-    get_started_button = tk.Button(window, text="Get Started!", command=show_loadScreen)
-    get_started_button.place(x=50, y=70)
+    welcome_label = tk.Label(window, text = "WELCOME TO THE MUSIC MOOD APP.", foreground="white", background="#003841" ,font=("Helvetica", 16, "bold"))
+    welcome_label.place(x=50, y=120)
+    text_2 = tk.Label(window, text= "want to listen to some songs? or view your spotify details?", foreground="white", background="#003841" ,font=("Helvetica", 12))
+    text_2.place(x=50, y=170)
+
+def change_color_on_hover(button, enter_color, leave_color, enter_fg, leave_fg):
+    button.bind("<Enter>", lambda e: button.config(background=enter_color, foreground=enter_fg))
+    button.bind("<Leave>", lambda e: button.config(background=leave_color, foreground=leave_fg))
 
 def show_loadScreen():
     clear_window()
     loading_screen = tk.Label(window, text = "loading...", font=("Helvetica", 16)).pack(pady=10)
     window.after(1000, main)
-    
+
 def clear_window():
     for widget in window.winfo_children():
-        widget.destroy()
+        if widget != canvas_section:  #makig sure not to clear/destroy canvas
+            widget.destroy()
         
 class UserOptions:
     def __init__(self):
@@ -57,7 +78,6 @@ class Login:
         clear_window()
         auth_url, _ = self.spotify.authorization_url(self.authorization_base_url, prompt='login')
         login_text = tk.Label(window, text = "\nVisit this URL to login: ", font=("Times New Roman", 12))
-        # login_text.pack(pady=10)
         login_text.place(x=10, y=10)
         
         login_link = tk.Label(
@@ -73,22 +93,36 @@ class Login:
         login_link.bind("<Button-1>", lambda event: webbrowser.open(auth_url))
         
         while True: 
-            try:
-                self.redirect_response = input("\nPaste the redirect URL here: ") 
-
-                if self.redirect_response.startswith("https://"):
-                    break
-                else:
-                    print("Incorrect URL format")
-            except ValueError:
-                print("Invalid URL format. Ensure the url starts with \"https://\"")
-
-        print(f"\nLogging in")
-        for _ in range(3):
-            time.sleep(0.5)
-            print(".", end="",flush=True)
-        print()
-        print("\033[32mSuccessfully Logged in\033[0m")
+                entry = tk.Label(window, text ="\nPaste the redirect URL here: ", font=("Times New Roman", 12))
+                entry.place(x=10, y= 90)
+                
+                #creating a Text widget for multiline input and fr single , use "Entry"
+                self.redirect_response = tk.Text(window, width = 50, height = 2)
+                self.redirect_response.place(x=200, y=100)
+                
+                submit_button = tk.Button(
+                    window,
+                    text="Submit",
+                    command= lambda: (
+                messagebox.showinfo("Success", "Valid URL")
+                if self.redirect_response.get("1.0", tk.END).strip().startswith("https://")  #retrieving all the text
+                else messagebox.showerror("Error",  "Invalid URL format. Ensure the URL starts with 'https://'.")
+                ))
+                submit_button.place(x=250, y=150)
+                
+    def loading_effect(self, label):
+        label.config(text="Logging in")
+        self.loading_dots(label, 0)
+        
+    def loading_dots(self, label, count):
+        if count < 6:
+            dots = '.' * (count % 4)
+            label.config(text=f"Logging in{dots}")
+            count +=1
+            label.after(500, self.loading_dots, label, count)  #updating every 0.5 secs
+        
+        else:
+            label.config(text= "Successfully Logged in", fg="green")
  
     def fetchingAccessToken(self):
         if self.redirect_response:
@@ -192,24 +226,24 @@ class PlaylistRecommendation:
                         
                 if option == "C":
                     print("\nGetting more recommendations")
-                    for _ in range(4):
-                        time.sleep(0.5)
-                        print(".", end="",flush=True)
-                    print()
-                    self.getPublicRecommendations()
+                    # for _ in range(4):
+                    #     time.sleep(0.5)
+                    #     print(".", end="",flush=True)
+                    # print()
+                    # self.getPublicRecommendations()
 
-                elif option == "S":
-                    user_det = UserSpotifyDetails(client_id, client_secret)
-                    user_det.userOptions()
-                    user_det.userChooseOption()
+                # elif option == "S":
+                #     user_det = UserSpotifyDetails(client_id, client_secret)
+                #     user_det.userOptions()
+                #     user_det.userChooseOption()
 
-                elif option == "E":
-                    print("\nExiting the program")
-                    for _ in range(4):
-                        time.sleep(0.5)
-                        print(".", end="",flush=True)
-                    print()
-                    exit()
+                # elif option == "E":
+                #     print("\nExiting the program")
+                #     for _ in range(4):
+                #         time.sleep(0.5)
+                #         print(".", end="",flush=True)
+                #     print()
+                #     exit()
 
                 elif option == "M":
                     self.enterMood()
@@ -290,9 +324,10 @@ class UserSpotifyDetails:
                 elif self.user_op == 9:
                     logout()
                 elif self.user_op == 10:
-                    user_rec = PlaylistRecommendation(client_id, client_secret, access_token)
-                    user_rec.enterMood()
-                    user_rec.getPublicRecommendations()
+                    ...
+                    # user_rec = PlaylistRecommendation(client_id, client_secret, access_token)
+                    # user_rec.enterMood()
+                    # user_rec.getPublicRecommendations()
                     
                 else:
                     print("Not an option. Enter a valid option")
@@ -398,12 +433,12 @@ def logout():
     if os.path.exists(cache_path):
         os.remove(cache_path)
         print("\nLogging out")
-        for _ in range(4):
-            time.sleep(0.5)
-            print(".", end="",flush=True)
-        print()
-        print(f"\033[32mSuccessfully logged out\033[0m")
-        exit()
+        # for _ in range(4):
+        #     time.sleep(0.5)
+        #     print(".", end="",flush=True)
+        # print()
+        # print(f"\033[32mSuccessfully logged out\033[0m")
+        # exit()
     else:
         print(f"\n\033[31mNo account has been logged in. Please login to continue.\033[0m")
 
@@ -433,5 +468,10 @@ def main():
         user_datails.userOptions()
         user_datails.userChooseOption()
    
-showWelcomeScreen()     
+
+showWelcomeScreen() 
+get_started_button = tk.Button(window, text="Get Started!", command=show_loadScreen, font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
+get_started_button.place(x=50, y=230)    
+change_color_on_hover(get_started_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")    
+
 window.mainloop()
