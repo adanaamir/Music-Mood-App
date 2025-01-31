@@ -1,17 +1,28 @@
 import tkinter as tk
-from PIL import Image, ImageTk  # Make sure to install Pillow library
 
-# Create the main window
-root = tk.Tk()
-root.title("Icon Example")
+def check_url():
+    redirect_url = redirect_response.get("1.0", tk.END).strip()
+    
+    if redirect_url.startswith("https://"):
+        message_label.config(text="Success!", fg="green")
+    else:
+        message_label.config(text="Error: Invalid URL format. Ensure the URL starts with 'https://'.", fg="red")
 
-# Set the icon for the main window
-icon = ImageTk.PhotoImage(file="icon.png")
-root.iconphoto(False, icon)
+# Main window
+window = tk.Tk()
+window.geometry("600x400")
+window.configure(bg="#faedd3")
 
-# Create a label to display some text
-label = tk.Label(root, text="This is a window with an icon")
-label.pack(pady=20)
+# Entry widget
+redirect_response = tk.Text(window, height=2, width=40)
+redirect_response.place(x=200, y=500)
 
-# Start the main event loop
-root.mainloop()
+# Button
+check_button = tk.Button(window, text="Check URL", command=check_url)
+check_button.place(x=420, y=530)
+
+# Label (Created once and updated dynamically)
+message_label = tk.Label(window, text="", font=("Helvetica", 9, "bold"), bg="#faedd3")
+message_label.place(x=420, y=550)
+
+window.mainloop()

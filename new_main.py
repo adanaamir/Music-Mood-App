@@ -12,7 +12,6 @@ ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 window = tk.Tk()
 window.title("MUSIC MOOD APP")
-
 window.geometry("1000x600")
 window.configure(background="#faedd3")
 
@@ -24,7 +23,6 @@ dashboard_icon = "dashboard.png"
 dash_image = Image.open(dashboard_icon)
 dash_image = dash_image.resize((50,50))
 dash_photo = ImageTk.PhotoImage(dash_image)
-
 canvas_section.create_image(1800,10, image=dash_photo, anchor=tk.NW)
 
 def showWelcomeScreen():
@@ -39,10 +37,10 @@ def change_color_on_hover(button, enter_color, leave_color, enter_fg, leave_fg):
     button.bind("<Leave>", lambda e: button.config(background=leave_color, foreground=leave_fg))
 
 def show_loadScreen():
+    global loading_screen
     loading_screen = tk.Label(window, text = "loading", font=("Helvetica", 12), background="#faedd3", foreground="black")
     loading_screen.place(x=50, y=300)
     window.after(1000, main)
-    
     add_dots(loading_screen, 0)
     
 def add_dots(label, count):
@@ -50,8 +48,13 @@ def add_dots(label, count):
         label.config(text=label.cget("text") + ".")
         label.after(500, add_dots, label, count+1)
     else:
-        window.after(1000, main)    #calling the main function after 1 sec
+        window.after(1, removeLoadingText)    #calling the remove function after 1 sec
 
+def removeLoadingText():
+    loading_screen.destroy()
+    userEnterURL()      #displaying the input box after it is done loading
+    main()
+    
 def clear_window():
     for widget in window.winfo_children():
         if widget != canvas_section:  #making sure not to clear/destroy canvas
@@ -59,11 +62,27 @@ def clear_window():
   
 def check_url():
     redirect_url = redirect_response.get("1.0", tk.END).strip()
+    
     if redirect_url.startswith("https://"):
-        messagebox.showinfo("Success", "Valid URL")
+        message_label.config(text="Success", fg="green")  #implement log in
     else:
-        messagebox.showerror("Error", "Invalid URL format. Ensure the URL starts with 'https://'.")
+        message_label.config(text="Error: Invalid URL format. Ensure the URL starts with 'https://'.", fg="red")
+
+def userEnterURL():
+    global redirect_response
+
+    #creating a Text widget for multiline input and fr single , use "Entry"
+    redirect_response = tk.Text(window, width = 120, height = 2)
+    redirect_response.place(x=420, y=480)
                 
+    submit_button = tk.Button(
+    window,
+    text="Submit",
+    command= lambda: check_url(),
+    font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
+    submit_button.place(x=1000, y=550)
+    change_color_on_hover(submit_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")
+               
 class UserOptions:
     def __init__(self):
         self.op = None
@@ -109,19 +128,7 @@ class Login:
         
         entry = tk.Label(window, text ="\nPaste the redirect URL here: ", font=("Helvetica", 13, "bold"), fg="black", bg="#faedd3")
         entry.place(x=50, y= 460)
-                
-        #creating a Text widget for multiline input and fr single , use "Entry"
-        self.redirect_response = tk.Text(window, width = 50, height = 2)
-        self.redirect_response.place(x=200, y=100)
-                
-        submit_button = tk.Button(
-            window,
-            text="Submit",
-            command= lambda: check_url
-            )
-        submit_button.place(x=250, y=150)
-
-        
+          
     # def loading_dots(self, label, count):
     #     if count < 6:
     #         dots = '.' * (count % 4)
@@ -133,10 +140,10 @@ class Login:
     #         label.config(text= "Successfully Logged in", fg="green")
  
     def fetchingAccessToken(self):
-        if self.redirect_response:
+        if redirect_response:
             token_url = "https://accounts.spotify.com/api/token"
             auth = HTTPBasicAuth(self.client_id, self.client_secret)
-            self.token_info = self.spotify.fetch_token(token_url, auth=auth, authorization_response=self.redirect_response)
+            self.token_info = self.spotify.fetch_token(token_url, auth=auth, authorization_response=redirect_response.get("1.0", tk.END).strip())
         else:
             raise ValueError(f"\033[31mError: Token not found\033[0m")
 
@@ -481,5 +488,8 @@ showWelcomeScreen()
 get_started_button = tk.Button(window, text="Get Started!", command=show_loadScreen, font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
 get_started_button.place(x=50, y=230)    
 change_color_on_hover(get_started_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")    
+
+message_label = tk.Label(window, text="", font=("Helvetica", 9, "bold"), bg="#faedd3")
+message_label.place(x=420, y=550)
 
 window.mainloop()
