@@ -5,7 +5,6 @@ from requests.auth import HTTPBasicAuth
 from spotipy.oauth2 import SpotifyOAuth
 import tkinter as tk 
 from tkinter import messagebox
-import tkinter.font as tkFont
 from PIL import Image, ImageTk
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
@@ -14,6 +13,7 @@ window = tk.Tk()
 window.title("MUSIC MOOD APP")
 window.geometry("1000x600")
 window.configure(background="#faedd3")
+redirect_response = None
 
 canvas_section = tk.Canvas(window, width=1000, height=600, bg="#faedd3", highlightthickness=0)
 canvas_section.pack(fill="both", expand=True)
@@ -40,7 +40,6 @@ def show_loadScreen():
     global loading_screen
     loading_screen = tk.Label(window, text = "loading", font=("Helvetica", 12), background="#faedd3", foreground="black")
     loading_screen.place(x=50, y=300)
-    window.after(1000, main)
     add_dots(loading_screen, 0)
     
 def add_dots(label, count):
@@ -52,53 +51,36 @@ def add_dots(label, count):
 
 def removeLoadingText():
     loading_screen.destroy()
-    userEnterURL()      #displaying the input box after it is done loading
     main()
     
 def clear_window():
     for widget in window.winfo_children():
         if widget != canvas_section:  #making sure not to clear/destroy canvas
             widget.destroy()
-  
-def check_url():
-    redirect_url = redirect_response.get("1.0", tk.END).strip()
-    
-    if redirect_url.startswith("https://"):
-        message_label.config(text="Success", fg="green")  #implement log in
-    else:
-        message_label.config(text="Error: Invalid URL format. Ensure the URL starts with 'https://'.", fg="red")
-
-def userEnterURL():
-    global redirect_response
-
-    #creating a Text widget for multiline input and fr single , use "Entry"
-    redirect_response = tk.Text(window, width = 120, height = 2)
-    redirect_response.place(x=420, y=480)
                 
-    submit_button = tk.Button(
-    window,
-    text="Submit",
-    command= lambda: check_url(),
-    font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
-    submit_button.place(x=1000, y=550)
-    change_color_on_hover(submit_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")
-               
 class UserOptions:
     def __init__(self):
         self.op = None
 
     def get_option(self):
-        print("1. Find Music by Mood\n2. Explore your Spotify Data")
-        while True:
-            try:
-                self.op = int(input("Please enter any option(1/2): "))
-                if self.op in [1,2]:
-                    break
-                else:
-                    print("Not an option. Enter a correct option(1/2)")
-            except ValueError:   
-                print("Incorrect \nType: \"str\" entered. Enter an int.")
-        return self.op
+        option1 = tk.Label(window, text="1. Find Music by Mood", font=("Helvetica", 12, "bold"), background="#faedd3", foreground="black")
+        option1.place(x=50, y=650)
+        explore1 = tk.Button(window, text="Explore",
+            command= lambda: self.const(),
+            font=("Helvetica", 9), fg= "blue", bg="#faedd3", cursor="hand2"
+        )
+        explore1.place(x=400, y=650)
+        
+        option2 = tk.Label(window, text="2. Explore your Spotify Data", font=("Helvetica", 12, "bold"), background="#faedd3", foreground="black")
+        option2.place(x=50, y=680)
+        explore2 = tk.Button(window, text="Explore",
+            command= lambda: self.const(),
+            font=("Helvetica", 9), fg= "blue", bg="#faedd3", cursor="hand2"
+        )
+        explore2.place(x=400, y=680)
+    
+    def const(self):
+        text = tk.Label(window, text= "EXPLORED")
 
 class Login:
     def __init__(self, client_id, client_secret):
@@ -107,6 +89,17 @@ class Login:
         self.redirect_url = "https://oauth.pstmn.io/v1/browser-callback"
         self.authorization_base_url = "https://accounts.spotify.com/authorize"
         self.spotify = OAuth2Session(self.client_id, scope=[], redirect_uri=self.redirect_url)
+
+    def check_url(self):
+        redirect_url = redirect_response.get("1.0", tk.END).strip()
+        
+        if redirect_url.startswith("https://"):
+            message_label.config(text="Successfully Logged in", fg="green")
+            self.fetchingAccessToken()
+            user_login = UserOptions()
+            user_login.get_option()
+        else:
+            message_label.config(text="Error: Invalid URL format. Ensure the URL starts with 'https://'.", fg="red")
 
     def autheticate_user(self):
         auth_url, _ = self.spotify.authorization_url(self.authorization_base_url, prompt='login')
@@ -128,17 +121,21 @@ class Login:
         
         entry = tk.Label(window, text ="\nPaste the redirect URL here: ", font=("Helvetica", 13, "bold"), fg="black", bg="#faedd3")
         entry.place(x=50, y= 460)
-          
-    # def loading_dots(self, label, count):
-    #     if count < 6:
-    #         dots = '.' * (count % 4)
-    #         label.config(text=f"Logging in{dots}")
-    #         count +=1
-    #         label.after(500, self.loading_dots, label, count)  #updating every 0.5 secs
         
-    #     else:
-    #         label.config(text= "Successfully Logged in", fg="green")
- 
+        global redirect_response
+
+        #creating a Text widget for multiline input and fr single , use "Entry"
+        redirect_response = tk.Text(window, width = 120, height = 2)
+        redirect_response.place(x=420, y=480)
+                    
+        submit_button = tk.Button(
+        window,
+        text="Submit",
+        command= lambda: self.check_url(),
+        font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
+        submit_button.place(x=1000, y=550)
+        change_color_on_hover(submit_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")
+
     def fetchingAccessToken(self):
         if redirect_response:
             token_url = "https://accounts.spotify.com/api/token"
@@ -461,7 +458,6 @@ def main():
     load_dotenv()
     client_id = os.getenv("CLIENT_ID")
     client_secret = os.getenv("CLIENT_SECRET")
-
     if not client_id or not client_secret:
         print("MISSING CLIENT_ID OR CLIENT_SECRET")
         exit()
@@ -483,12 +479,13 @@ def main():
         user_datails.userOptions()
         user_datails.userChooseOption()
    
-
-showWelcomeScreen() 
-get_started_button = tk.Button(window, text="Get Started!", command=show_loadScreen, font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
-get_started_button.place(x=50, y=230)    
-change_color_on_hover(get_started_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")    
-
+def commands():
+    showWelcomeScreen() 
+    get_started_button = tk.Button(window, text="Get Started!", command=show_loadScreen, font=("Helvetica", 14), foreground= "white", background="#001c21", cursor="hand2")
+    get_started_button.place(x=50, y=230)    
+    change_color_on_hover(get_started_button, enter_color="#001215", leave_color="#001c21", enter_fg="white", leave_fg="white")    
+    
+commands()
 message_label = tk.Label(window, text="", font=("Helvetica", 9, "bold"), bg="#faedd3")
 message_label.place(x=420, y=550)
 
