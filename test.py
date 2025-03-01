@@ -1,23 +1,31 @@
-from flask import Flask, request, jsonify
+from kivy.lang import Builder
+from kivy.uix.boxlayout import BoxLayout
+from kivymd.app import MDApp
+from kivy.uix.behaviors import HoverBehavior
+from kivymd.uix.label import MDLabel
 
-app = Flask(__name__)
+KV = '''
+BoxLayout:
+    orientation: 'vertical'
+    padding: 20
+    spacing: 20
 
-# Fake user data (in real-world apps, this would come from a database)
-users = {
-    "adan": "password123",
-    "user1": "mypassword"
-}
+    HoverLabel:
+        text: "Hover over me!"
+        font_style: "H5"
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1  # Default color (white)
+'''
 
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.json  # Get data from frontend
-    username = data.get("username")
-    password = data.get("password")
+class HoverLabel(MDLabel, HoverBehavior):
+    def on_enter(self):
+        self.text_color = (1, 0, 0, 1)  # Change to red on hover
 
-    if username in users and users[username] == password:
-        return jsonify({"message": "Login successful"}), 200
-    else:
-        return jsonify({"message": "Invalid credentials"}), 401
+    def on_leave(self):
+        self.text_color = (1, 1, 1, 1)  # Change back to white
 
-if __name__ == "__main__":
-    app.run(debug=True)
+class TestApp(MDApp):
+    def build(self):
+        return Builder.load_string(KV)
+
+TestApp().run()
