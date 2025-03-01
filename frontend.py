@@ -119,7 +119,7 @@ MDScreen:
                     allow_stretch: True
                     keep_ratio: True
                     size_hint_x: 1
-                    opacity: 0.3
+                    opacity: 0.2
                     size_hint_y: None
                     height: dp(1000)
                     pos_hint: {"center_x": 0.1, "y": -0.57}  
