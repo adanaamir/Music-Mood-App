@@ -30,7 +30,54 @@ MDScreen:
             rgba: 0, 0, 0, 1 
         Rectangle:
             pos: self.pos
-            size: self.size
+            size: Window.size
+    
+    Image:
+        id: img2
+        source: "Delete free icons designed by Roundicons_new.png"
+        opacity: 1
+        size_hint_y: None
+        size_hint_x: 1
+        height: dp(55)
+        allow_stretch: True
+        keep_ratio: False
+        pos_hint: {"top": 0.99} 
+
+    HoverText:
+        text: "Home"
+        font_size: dp(15)
+        md_bg_color: 0, 0, 0, 1
+        text_color: 1, 1, 1, 1 
+        pos_hint: {"center_x": 0.13, "y": 0.92} 
+        on_release: app.home_scroll()
+        font_name: "Unbounded-VariableFont_wght.ttf"
+        
+    HoverText:
+        text: "Explore Your Data"
+        font_size: dp(15)
+        md_bg_color: 0, 0, 0, 1
+        text_color: 1, 1, 1, 1 
+        pos_hint: {"center_x": 0.33, "y": 0.92} 
+        on_release: app.home_scroll()
+        font_name: "Unbounded-VariableFont_wght.ttf"
+        
+    HoverText:
+        text: "MoodBoard"
+        font_size: dp(15)
+        md_bg_color: 0, 0, 0, 1
+        text_color: 1, 1, 1, 1 
+        pos_hint: {"center_x": 0.59, "y": 0.92} 
+        on_release: app.home_scroll()
+        font_name: "Unbounded-VariableFont_wght.ttf"
+        
+    HoverText:
+        text: "Account"
+        font_size: dp(15)
+        md_bg_color: 0, 0, 0, 1
+        text_color: 1, 1, 1, 1 
+        pos_hint: {"center_x": 0.8, "y": 0.92} 
+        on_release: app.home_scroll()
+        font_name: "Unbounded-VariableFont_wght.ttf"
             
     ScrollView:
         id: scroll_view
@@ -53,25 +100,18 @@ MDScreen:
                     size_hint_y: None
                     width: root.width  
                     height: dp(180)
-                    pos_hint: {"center_x": 0.76, "y": 0.55}    
-                                    
-                # Image:
-                #     id: img2
-                #     source: "download (4).jpeg"
-                #     opacity: 0.5
-                #     size_hint_y: None
-                #     width: root.width  
-                #     height: dp(180)
-                #     pos_hint: {"center_x": 0.2, "y": 0.1}  
+                    pos_hint: {"center_x": 0.76, "y": 0.55}     
                 
-                # Image:
-                #     id: img3
-                #     source: "desktop wallpaper 'About you' the 1975.jpeg"
-                #     opacity: 0.5
-                #     size_hint_y: None
-                #     width: root.width  
-                #     height: dp(180)
-                #     pos_hint: {"center_x": 0.7, "y": 0.05}  
+                Image:
+                    id: img3
+                    source: "the marias poster.jpeg"
+                    allow_stretch: True
+                    keep_ratio: True
+                    size_hint_x: 1
+                    opacity: 0.3
+                    size_hint_y: None
+                    height: dp(900)
+                    pos_hint: {"center_x": 0.86, "y": -1.1}  
 
                 Image:
                     id: img4
@@ -82,14 +122,18 @@ MDScreen:
                     opacity: 0.3
                     size_hint_y: None
                     height: dp(1000)
-                    pos_hint: {"center_x": 0.1, "y": -0.5}  
+                    pos_hint: {"center_x": 0.1, "y": -0.57}  
                 
                 # Image:
                 #     id: img5
-                #     source: "desktop wallpaper 'About you' the 1975.jpeg"
+                #     source: "download (10).jpeg"
+                #     allow_stretch: True
+                #     keep_ratio: True
+                #     size_hint_x: 1
                 #     opacity: 0.3
                 #     size_hint_y: None
-                #     height: dp(100)
+                #     height: dp(1000)
+                #     pos_hint: {"center_x": 0.3, "y": -2} 
         
                 Label:
                     text: "WELCOME  TO  THE  MUSIC  MOOD  APP"
@@ -131,21 +175,21 @@ MDScreen:
                     color: (0.8, 0.8, 0.8, 1)
                     font_name: "Unbounded-VariableFont_wght.ttf"
                     
-                MDLabel:
-                    text: "MITSKI"
-                    font_size: dp(14)
-                    bold: False
-                    pos_hint: {"center_x": 0.68, "top": 0.56}
-                    color: (0.8, 0.8, 0.8, 1)
-                    font_name: "Unbounded-VariableFont_wght.ttf"
+                # MDLabel:
+                #     text: "MITSKI"
+                #     font_size: dp(14)
+                #     bold: False
+                #     pos_hint: {"center_x": 0.68, "top": 0.56}
+                #     color: (0.8, 0.8, 0.8, 1)
+                #     font_name: "Unbounded-VariableFont_wght.ttf"
                     
-                MDLabel:
-                    text: "Be the Cowboy-2018"
-                    font_size: dp(12)
-                    bold: False
-                    pos_hint: {"center_x": 0.65, "top": 0.51}
-                    color: (0.8, 0.8, 0.8, 1)
-                    font_name: "Unbounded-VariableFont_wght.ttf"
+                # MDLabel:
+                #     text: "Be the Cowboy-2018"
+                #     font_size: dp(12)
+                #     bold: False
+                #     pos_hint: {"center_x": 0.65, "top": 0.51}
+                #     color: (0.8, 0.8, 0.8, 1)
+                #     font_name: "Unbounded-VariableFont_wght.ttf"
 
             #BUTTONS                
                 GetStartedHover:
@@ -155,52 +199,16 @@ MDScreen:
                     text_color: 1, 1, 1, 1 
                     pos_hint: {"center_x": 0.2, "y": 0.5} 
                     on_release: app.getting_started_scroll()
-        
-                HoverText:
-                    text: "Home"
-                    font_size: dp(15)
-                    md_bg_color: 0, 0, 0, 1
-                    text_color: 1, 1, 1, 1 
-                    pos_hint: {"center_x": 0.13, "y": 0.92} 
-                    on_release: app.home_scroll()
-                    font_name: "Unbounded-VariableFont_wght.ttf"
-                    
-                HoverText:
-                    text: "Explore Your Data"
-                    font_size: dp(15)
-                    md_bg_color: 0, 0, 0, 1
-                    text_color: 1, 1, 1, 1 
-                    pos_hint: {"center_x": 0.33, "y": 0.92} 
-                    on_release: app.home_scroll()
-                    font_name: "Unbounded-VariableFont_wght.ttf"
-                    
-                HoverText:
-                    text: "MoodBoard"
-                    font_size: dp(15)
-                    md_bg_color: 0, 0, 0, 1
-                    text_color: 1, 1, 1, 1 
-                    pos_hint: {"center_x": 0.59, "y": 0.92} 
-                    on_release: app.home_scroll()
-                    font_name: "Unbounded-VariableFont_wght.ttf"
-                    
-                HoverText:
-                    text: "Account"
-                    font_size: dp(15)
-                    md_bg_color: 0, 0, 0, 1
-                    text_color: 1, 1, 1, 1 
-                    pos_hint: {"center_x": 0.8, "y": 0.92} 
-                    on_release: app.home_scroll()
-                    font_name: "Unbounded-VariableFont_wght.ttf"
        
             BoxLayout:
                 id: getting_started
                 size_hint_y: None
                 height: dp(400)
                 
-                Label:
-                    text: "Now you are at the next section!"
-                    font_size: dp(20)
-                    color: 1, 1, 1, 1   
+                # Label:
+                #     text: "Now you are at the next section!"
+                #     font_size: dp(20)
+                #     color: 1, 1, 1, 1   
 
             
 '''
@@ -228,13 +236,11 @@ class HoverText(MDRaisedButton, HoverBehavior):
     def on_leave(self):
         self.md_bg_color = self.default_color
         Window.set_system_cursor("arrow") 
-    
-    
 
 class MainApp(MDApp):
     def build(self):
         return Builder.load_string(KV)
-    
+
     def getting_started_scroll(self):
         scroll_view = self.root.ids.scroll_view
         target_section = self.root.ids.getting_started
@@ -245,7 +251,6 @@ class MainApp(MDApp):
         scroll_view = self.root.ids.scroll_view
         scroll_view.scroll_y = 1 #this scrolls to the top
         
-    
 
     
 MainApp().run()
