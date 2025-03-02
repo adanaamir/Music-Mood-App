@@ -81,6 +81,8 @@ MDScreen:
             
     ScrollView:
         id: scroll_view
+        size_hint_y: None
+        height: Window.height - dp(63)
         do_scroll_x: False 
         do_scroll_y: True  
 
@@ -88,6 +90,7 @@ MDScreen:
             orientation: "vertical"
             size_hint_y: None
             height: self.minimum_height
+            padding: [0, dp(60), 0, 0]
 
             FloatLayout:
                 size_hint_y: None
@@ -100,7 +103,7 @@ MDScreen:
                     size_hint_y: None
                     width: root.width  
                     height: dp(180)
-                    pos_hint: {"center_x": 0.76, "y": 0.55}     
+                    pos_hint: {"center_x": 0.8, "y": 0.7}     
                 
                 Image:
                     id: img3
@@ -111,7 +114,7 @@ MDScreen:
                     opacity: 0.3
                     size_hint_y: None
                     height: dp(900)
-                    pos_hint: {"center_x": 0.86, "y": -1.1}  
+                    pos_hint: {"center_x": 0.86, "y": -0.99}  
 
                 Image:
                     id: img4
@@ -122,7 +125,7 @@ MDScreen:
                     opacity: 0.2
                     size_hint_y: None
                     height: dp(1000)
-                    pos_hint: {"center_x": 0.1, "y": -0.57}  
+                    pos_hint: {"center_x": 0.1, "y": -0.4}  
                 
                 # Image:
                 #     id: img5
@@ -140,7 +143,7 @@ MDScreen:
                     font_size: dp(20)
                     bold: True
                     font_name: "Unbounded-VariableFont_wght.ttf"
-                    pos_hint: {"center_x": 0.2, "top": 1.32}
+                    pos_hint: {"center_x": 0.2, "top": 1.515}
                     color: (1, 0, 1, 0.3) 
                     
                 MDLabel:
@@ -148,14 +151,14 @@ MDScreen:
                     font_size: dp(20)
                     bold: True
                     color: (1, 0, 1, 1)
-                    pos_hint: {"center_x": 0.52, "top": 1.32}
+                    pos_hint: {"center_x": 0.52, "top": 1.515}
                     font_name: "Unbounded-VariableFont_wght.ttf"
                     
                 MDLabel:
                     text: "want to listen to some songs? or view your spotify details?"
                     font_size: dp(15)
                     bold: False
-                    pos_hint: {"center_x": 0.52, "top": 1.24}
+                    pos_hint: {"center_x": 0.52, "top": 1.44}
                     color: (0.8, 0.8, 0.8, 1)
                     font_name: "Unbounded-VariableFont_wght.ttf"
 
@@ -163,7 +166,7 @@ MDScreen:
                     text: "BILLIE EILISH"
                     font_size: dp(14)
                     bold: False
-                    pos_hint: {"center_x": 1.23, "top": 1}
+                    pos_hint: {"center_x": 1.26, "top": 1.15}
                     color: (0.8, 0.8, 0.8, 1)
                     font_name: "Unbounded-VariableFont_wght.ttf"
                     
@@ -171,7 +174,7 @@ MDScreen:
                     text: "107.9M monthly listeners"
                     font_size: dp(12)
                     bold: False
-                    pos_hint: {"center_x": 1.2, "top": 0.95}
+                    pos_hint: {"center_x": 1.239, "top": 1.1}
                     color: (0.8, 0.8, 0.8, 1)
                     font_name: "Unbounded-VariableFont_wght.ttf"
                     
@@ -208,11 +211,8 @@ MDScreen:
                 # Label:
                 #     text: "Now you are at the next section!"
                 #     font_size: dp(20)
-                #     color: 1, 1, 1, 1   
-
-            
+                #     color: 1, 1, 1, 1 
 '''
-
 class GetStartedHover(MDRaisedButton, HoverBehavior):
     hover_color = ListProperty([0.6, 0, 0.3, 1]) 
     default_color = ListProperty([0.8, 0, 0.4, 1])
