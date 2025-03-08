@@ -32,8 +32,10 @@ class Login:
 
     def autheticate_user(self):
         auth_url, _ = self.spotify.authorization_url(self.authorization_base_url, prompt='login')
-        print(f"\nVisit this URL to login: \033[34m{auth_url}\033[0m")
+        # print(f"\nVisit this URL to login: \033[34m{auth_url}\033[0m")
+        return auth_url
 
+    def proceed_URL(self):
         while True: 
             try:
                 self.redirect_response = input("\nPaste the redirect URL here: ") 
