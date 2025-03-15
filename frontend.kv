@@ -8,7 +8,7 @@ MDScreen:
     
     Image:
         id: img2
-        source: "Delete free icons designed by Roundicons_new.png"
+        source: "images/Delete free icons designed by Roundicons_new.png"
         opacity: 1
         size_hint_y: None
         size_hint_x: 1
@@ -59,7 +59,7 @@ MDScreen:
         height: Window.height - dp(63)
         do_scroll_x: False 
         do_scroll_y: True  
-
+        
         MDBoxLayout:
             orientation: "vertical"
             size_hint_y: None
@@ -72,7 +72,7 @@ MDScreen:
                 
                 Image:
                     id: img1
-                    source: "Billie Eilish NDA vevo.jpeg"
+                    source: "images/Billie Eilish NDA vevo.jpeg"
                     opacity: 0.7
                     size_hint_y: None
                     width: root.width  
@@ -81,7 +81,7 @@ MDScreen:
                 
                 Image:
                     id: img3
-                    source: "the marias poster.jpeg"
+                    source: "images/the marias poster.jpeg"
                     allow_stretch: True
                     keep_ratio: True
                     size_hint_x: 1
@@ -92,7 +92,7 @@ MDScreen:
 
                 Image:
                     id: img4
-                    source: "download_new.jpeg"
+                    source: "images/download_new.jpeg"
                     allow_stretch: True
                     keep_ratio: True
                     size_hint_x: 1
@@ -103,7 +103,7 @@ MDScreen:
                 
                 # Image:
                 #     id: img5
-                #     source: "download (10).jpeg"
+                #     source: "images/download (10).jpeg"
                 #     allow_stretch: True
                 #     keep_ratio: True
                 #     size_hint_x: 1
@@ -151,6 +151,7 @@ MDScreen:
                     pos_hint: {"center_x": 1.239, "top": 1.1}
                     color: (0.8, 0.8, 0.8, 1)
                     font_name: "Unbounded-VariableFont_wght.ttf"
+
                     
                 # MDLabel:
                 #     text: "MITSKI"
@@ -168,22 +169,33 @@ MDScreen:
                 #     color: (0.8, 0.8, 0.8, 1)
                 #     font_name: "Unbounded-VariableFont_wght.ttf"
 
-            #BUTTONS                
                 GetStartedHover:
+                    id: getting_started
                     text: "Get Started"
                     font_size: dp(16)
                     md_bg_color: 0.8, 0, 0.4
                     text_color: 1, 1, 1, 1 
                     pos_hint: {"center_x": 0.2, "y": 0.5} 
                     on_release: app.linkToLogin()
-       
+                    
             BoxLayout:
                 id: getting_started
                 size_hint_y: None
                 height: dp(600)
-                            
-                Label:
-                    text: "Now you are at the next section!"
-                    font_size: dp(20)
-                    color: 1, 1, 1, 1 
-                
+                pos_hint: {"center_x": 0.5}
+                orientation: "vertical"
+
+                HoverLabel:
+                    id: url_label
+                    font_size: dp(16)
+                    pos_hint: {"center_x": 0.52, "y": 0.3}
+                    markup: True                                 # Allows clickable links
+                    on_ref_press: app.open_link(args[1])
+                    color: 1, 1, 1, 1
+                    font_name: "Cardo/Cardo-Regular.ttf"
+
+                    size_hint_x: None  
+                    width: dp(900)                 # Set a fixed width
+                    text_size: self.width, None        # Prevents breaking into lines
+                    shorten: True                      # Shortens text with "..." if too long
+                    shorten_from: "right"             #Cut text from the right

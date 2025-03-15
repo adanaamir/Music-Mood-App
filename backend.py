@@ -4,7 +4,6 @@ from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
 from spotipy.oauth2 import SpotifyOAuth
 
-#front end
 class UserOptions:
     def __init__(self):
         self.op = None
@@ -35,24 +34,12 @@ class Login:
         # print(f"\nVisit this URL to login: \033[34m{auth_url}\033[0m")
         return auth_url
 
-    def proceed_URL(self):
-        while True: 
-            try:
-                self.redirect_response = input("\nPaste the redirect URL here: ") 
-
-                if self.redirect_response.startswith("https://"):
-                    break
-                else:
-                    print("Incorrect URL format")
-            except ValueError:
-                print("Invalid URL format. Ensure the url starts with \"https://\"")
-
-        print(f"\nLogging in")
-        for _ in range(3):
-            time.sleep(0.5)
-            print(".", end="",flush=True)
-        print()
-        print("\033[32mSuccessfully Logged in\033[0m")
+    def proceed_URL(self, redirect_response):
+        if redirect_response.startswith("https://"):
+            return "Logging in"
+        else:
+            return "Incorrect URL format"
+        
  
     def fetchingAccessToken(self):
         if self.redirect_response:
