@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}  
+
+    hello, 
+    <!-- jinja syntax for doing something conditionally -->
+    {% if name %}
+        {{ name }}
+    {% else %}
+        world
+    {% endif %}
+
+{% endblock %}
