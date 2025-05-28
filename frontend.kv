@@ -1,0 +1,123 @@
+#:kivy 2.3.1
+FloatLayout:
+    Image:
+        source: 'images/download_new.jpeg'
+        allow_stretch: True
+        keep_ratio: True
+        size_hint: 0.9,1
+        pos_hint: {'x': -0.3, 'y': 0}
+        color: 1,1,1, 1
+
+    Image:
+        source: 'images/black.jpg'
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: 0.4,1
+        pos_hint: {'right':1, 'y': 0}
+        color: 1,1,1, 1
+
+    Image:
+        source: 'images\Billie Eilish NDA vevo.jpeg'
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: 0.3,0.3
+        pos_hint: {'x':0.67, 'y': 0.6}
+        color: 1,1,1, 1
+
+    Image:
+        source: 'images\mariasposter.jpeg'
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: 0.5,0.8
+        pos_hint: {'x':0.6, 'y': -0.3}
+        color: 1,1,1, 1
+        
+
+    Widget:       #for opacity of bg image
+        size_hint: 1, 1
+        pos_hint: {'x': 0, 'y': 0}
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 0.4
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+    RelativeLayout:
+        size_hint: None,None
+        size: self.size
+        pos_hint: {'x': 0, 'y': 0.64}
+
+        Label:
+            text: "WELCOME   T0   SPOTIFY   APP   RECOMMENDATION"
+            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+            font_size: "25sp"
+            x: 540
+            y: -35
+            size_hint: None, None
+            size: self.texture_size
+            color: 1, 0.07, 0.58, 1
+
+        Label:
+            text: "WELCOME   T0   SPOTIFY   APP   RECOMMENDATION"
+            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+            font_size: "25sp"
+            x: 534
+            y: -35
+            size_hint: None, None
+            size: self.texture_size
+            color: 1, 0.07, 0.58, 0.5
+    
+        Label:
+            text: "want to listen to some songs? or view your spotify details?"
+            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+            font_size: "16sp"
+            x: 660
+            y: -100
+            size_hint: None, None
+            size: self.texture_size
+            color: 1, 1, 1, 0.97
+
+        Label:
+            text: "click the button below to login to your Spotify account"
+            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+            font_size: "16sp"
+            x: 680
+            y: -165
+            size_hint: None,None
+            size: self.texture_size
+            color: 1,1,1, 0.97
+
+        # Label:
+        #     text: "BILLIE EILISH"
+        #     font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+        #     font_size: "16sp"
+        #     x: 1400
+        #     y: -185
+        #     size_hint: None,None
+        #     size: self.texture_size
+        #     color: 1,1,1, 0.97
+
+        # Label:
+        #     text: "107.9M Monthly listeners"
+        #     font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+        #     font_size: "16sp"
+        #     x: 1350
+        #     y: -230
+        #     size_hint: None,None
+        #     size: self.texture_size
+        #     color: 1,1,1, 0.97
+
+        HoverButton:
+            text: "Get Started"
+            size_hint: None, None
+            font_size: 21
+            x: 900
+            y: -300
+            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
+            size: 200, 60
+            background_color: 1, 0, 0.498, 1
+            on_release: app.spotify_login()
+
+        
+
