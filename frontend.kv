@@ -1,123 +1,242 @@
 #:kivy 2.3.1
-FloatLayout:
-    Image:
-        source: 'images/download_new.jpeg'
-        allow_stretch: True
-        keep_ratio: True
-        size_hint: 0.9,1
-        pos_hint: {'x': -0.3, 'y': 0}
-        color: 1,1,1, 1
+WindowManager:
+    MainScreen:
+    Dashboard:
 
-    Image:
-        source: 'images/black.jpg'
-        allow_stretch: True
-        keep_ratio: False
-        size_hint: 0.4,1
-        pos_hint: {'right':1, 'y': 0}
-        color: 1,1,1, 1
+<MainScreen@Screen>:
+    name: 'Mainwindow'
+    FloatLayout:
+        Image:
+            source: 'images/MacBook Air - 3.png'
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1,1
+            pos_hint: {'x': 0, 'y': 0}
 
-    Image:
-        source: 'images\Billie Eilish NDA vevo.jpeg'
-        allow_stretch: True
-        keep_ratio: False
-        size_hint: 0.3,0.3
-        pos_hint: {'x':0.67, 'y': 0.6}
-        color: 1,1,1, 1
+        # Image:
+        #     source: 'images/voices in my head poster.jpg'
+        #     allow_stretch: True
+        #     keep_ratio: True
+        #     size_hint: 0.4,0.4
+        #     pos_hint: {'x': 0.1, 'y': 0.6}
+        #     color: 1,1,1, 1
 
-    Image:
-        source: 'images\mariasposter.jpeg'
-        allow_stretch: True
-        keep_ratio: False
-        size_hint: 0.5,0.8
-        pos_hint: {'x':0.6, 'y': -0.3}
-        color: 1,1,1, 1
-        
+        # Image:
+        #     source: 'images/black.jpg'
+        #     allow_stretch: True
+        #     keep_ratio: False
+        #     size_hint: 0.4,1
+        #     pos_hint: {'right':1, 'y': 0}
+        #     color: 1,1,1, 1
 
-    Widget:       #for opacity of bg image
-        size_hint: 1, 1
-        pos_hint: {'x': 0, 'y': 0}
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, 0.4
-            Rectangle:
-                pos: self.pos
-                size: self.size
+        # Image:
+        #     source: 'images/Billie Eilish NDA vevo.jpeg'
+        #     allow_stretch: True
+        #     keep_ratio: False
+        #     size_hint: 0.3,0.3
+        #     pos_hint: {'x':0.67, 'y': 0.6}
+        #     color: 1,1,1, 1
 
-    RelativeLayout:
-        size_hint: None,None
-        size: self.size
-        pos_hint: {'x': 0, 'y': 0.64}
+        # Image:
+        #     source: 'images/mariasposter.jpeg'
+        #     allow_stretch: True
+        #     keep_ratio: False
+        #     size_hint: 0.5,0.8
+        #     pos_hint: {'x':0.6, 'y': -0.3}
+        #     color: 1,1,1, 1
+            
 
-        Label:
-            text: "WELCOME   T0   SPOTIFY   APP   RECOMMENDATION"
-            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-            font_size: "25sp"
-            x: 540
-            y: -35
-            size_hint: None, None
-            size: self.texture_size
-            color: 1, 0.07, 0.58, 1
+        Widget:       #for opacity of bg image
+            size_hint: 1, 1
+            pos_hint: {'x': 0, 'y': 0}
+            canvas.before:
+                Color:
+                    rgba: 0.980, 0.973, 0.965, 0
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
-        Label:
-            text: "WELCOME   T0   SPOTIFY   APP   RECOMMENDATION"
-            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-            font_size: "25sp"
-            x: 534
-            y: -35
-            size_hint: None, None
-            size: self.texture_size
-            color: 1, 0.07, 0.58, 0.5
-    
-        Label:
-            text: "want to listen to some songs? or view your spotify details?"
-            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-            font_size: "16sp"
-            x: 660
-            y: -100
-            size_hint: None, None
-            size: self.texture_size
-            color: 1, 1, 1, 0.97
-
-        Label:
-            text: "click the button below to login to your Spotify account"
-            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-            font_size: "16sp"
-            x: 680
-            y: -165
+        RelativeLayout:
             size_hint: None,None
-            size: self.texture_size
-            color: 1,1,1, 0.97
+            size: self.size
+            pos_hint: {'x': 0, 'y': 0.64}
 
-        # Label:
-        #     text: "BILLIE EILISH"
-        #     font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-        #     font_size: "16sp"
-        #     x: 1400
-        #     y: -185
-        #     size_hint: None,None
-        #     size: self.texture_size
-        #     color: 1,1,1, 0.97
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.2
+                RoundedRectangle:
+                    pos: 80 + 2, -62 - 2
+                    size: 400, 45
+                    radius: [2]
 
-        # Label:
-        #     text: "107.9M Monthly listeners"
-        #     font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-        #     font_size: "16sp"
-        #     x: 1350
-        #     y: -230
-        #     size_hint: None,None
-        #     size: self.texture_size
-        #     color: 1,1,1, 0.97
+                Color:
+                    rgba: 0, 0, 0, 0.2
+                RoundedRectangle:
+                    pos: 78 + 2, 5 - 2
+                    size: 220, 60
+                    radius: [3]
 
-        HoverButton:
-            text: "Get Started"
-            size_hint: None, None
-            font_size: 21
-            x: 900
-            y: -300
-            font_name: "newfonts/static/Montserrat-SemiBold.ttf"
-            size: 200, 60
-            background_color: 1, 0, 0.498, 1
-            on_release: app.spotify_login()
+                Color:
+                    rgba: 0, 0, 0, 0.2
+                RoundedRectangle:
+                    pos: 78 + 2, -152 - 2
+                    size: 220, 60
+                    radius: [3]
 
+            Label:
+                markup: True     #for enablng colors for specific post
+                text: "WELCOME  T0  [color=#AD3939]SPOTIFY[/color]\nRECOMMENDATION  APP"
+                font_name: "fonts/static/Inter_24pt-ExtraBold.ttf"
+                font_size: "26sp"
+                x: 80
+                y: 160
+                size_hint: None, None
+                size: self.texture_size
+                color: 0.067, 0.094, 0.153, 1
         
+            Label:
+                text: "Discover music you'll love"
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: "18sp"
+                x: 80
+                y: 80
+                size_hint: None, None
+                size: self.texture_size
+                color: 0.067, 0.094, 0.153, 1
 
+            Label:
+                text: "Home"
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: "19sp"
+                x: 1300
+                y: 230
+                size_hint: None, None
+                size: self.texture_size
+                color: 0.067, 0.094, 0.153, 1
+
+            Label:
+                text: "About us"
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: "19sp"
+                x: 1700
+                y: 230
+                size_hint: None, None
+                size: self.texture_size
+                color: 0.067, 0.094, 0.153, 1
+
+            Label:
+                text: "Contact"
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: "19sp"
+                x: 1500
+                y: 230
+                size_hint: None, None
+                size: self.texture_size
+                color: 0.067, 0.094, 0.153, 1
+
+            TextInput:
+                id: redirect_input
+                font_name: "fonts/static/Inter_18pt-Regular.ttf"
+                hint_text: "Paste redirect url here"
+                size_hint: None, None
+                size: 400, 45
+                x: 80
+                y: -60
+                font_size: 18
+                multiline: True
+                foreground_color: 0, 0, 0, 1        
+                cursor_color: 0, 0, 0, 1             
+                background_color: 1, 1, 1, 1         
+                background_normal: ''
+                background_active: ''
+                padding: [10, 10, 10, 10]
+
+            HoverButton:
+                text: "LOGIN"
+                font_name: "fonts\static\Inter_18pt-Bold.ttf"
+                size_hint: None, None
+                font_size: 19
+                x: 80
+                y: 7
+                size: 220, 60
+                background_color: 1, 0, 0.498, 1
+                on_release: app.spotify_login()
+
+            HoverButton:
+                text: "SUBMIT"
+                size_hint: None, None
+                font_size: 21
+                x: 80
+                y: -150
+                font_name: "fonts/static/Inter_18pt-Bold.ttf"
+                size: 220, 60
+                background_color: 1, 0, 0.498, 1
+                on_release:
+                    app.check_redirect()
+                            
+
+# <Dashboard>:
+#     name: "dashboard"
+#     SlidingDashboard:
+#         id: sliding_dash
+
+#     FloatLayout:
+#         canvas.before: 
+#             Color:
+#                 rgba: 0.1, 0.1, 0.1, 1
+#             Rectangle:
+#                 pos: self.pos
+#                 size: self.size
+
+#         Label:
+#             text: "Dashboard"
+#             font_name: "fonts/static/Inter_18pt-Regular.ttf"
+#             font_size: 21
+#             pos_hint: {'x': 200, 'y': 200}
+#             size_hint: None, None
+
+#         # Button:
+#         #     text: 'Menu'
+#         #     size_hint: None, None
+#         #     size: 100,50
+#         #     pos_hint: {'x': 0, 'top': 1}
+#         #     on_release: root.toggle_menu()
+
+#         RelativeLayout:
+#             size_hint: None,None
+#             size: self.size
+#             pos_hint: {'x': 0, 'y': 0}
+
+#             Label:
+#                 text: 'Dashboard'
+#                 font_name: "fonts/static/Inter_18pt-Regular.ttf"
+#                 font_size: 21
+#                 x: 300
+#                 y: -100
+            
+#             Label:
+#                 text: '____________________________________________________________________________________'
+#                 color: 1,1,1,1
+#                 font_size: 21
+#                 x: 300
+#                 y: -150
+            
+#             # Label:
+#             #     text: 'Hello _'
+#             #     font_name: "fonts/static/Inter_18pt-Regular.ttf"
+#             #     font_size: 21
+#             #     x: 300
+#             #     y: -100
+
+#             # HoverButton:
+#             #     text: "Go back"
+#             #     size_hint: None, None
+#             #     font_size: 21
+#             #     x: 900
+#             #     y: -300
+#             #     font_name: "fonts/static/Inter_18pt-Regular.ttf"
+#             #     size: 200, 60
+#             #     background_color: 1, 0, 0.498, 1
+#             #     on_release: app.root.current = "Mainwindow"
+
+    

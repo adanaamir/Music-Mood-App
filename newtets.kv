@@ -1,0 +1,230 @@
+#:kivy 2.3.1
+ScreenManager:
+    Dashboard:
+
+<Dashboard>:
+    name: "dashboard"
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.97, 0.945, 0.89, 1
+            Rectangle: 
+                pos: self.pos
+                size: self.size
+
+        SlidingDashboard:
+            id: sliding_dashboard
+            size_hint: 1, 1  #fill screen
+
+<SlidingDashboard>:
+    orientation: 'horizontal'
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.97, 0.945, 0.89, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # HoverMenu:
+        #     size_hint: None, None
+        #     size: 40,40
+        #     background_normal: 'images/menu-burger.png'
+        #     background_down: 'images/menu-burger.png'
+        #     # background_down: ''
+        #     pos_hint: {'x': 0.79, 'y': 0.85}  
+        #     border: 0, 0, 0, 0
+        #     on_release: root.toggle_menu()
+
+        # Image:
+        #     source: 'images/_3.jpg'
+        #     allow_stretch: True
+        #     keep_ratio: False
+        #     size_hint: 0.7,0.5
+        #     pos_hint: {'x':0.62, 'y': 0}
+        #     color: 1,1,1, 0.2
+
+        # Image:
+        #     source: 'images/leon claire tv girl.jpg'
+        #     allow_stretch: True
+        #     keep_ratio: False
+        #     size_hint: 0.8,0.8
+        #     pos_hint: {'x':-0.2, 'y': 0.3}
+        #     color: 1,1,1, 0.3
+
+        RelativeLayout:
+            size_hint: None,None
+            size: self.size
+            pos_hint: {'x': 0.3, 'y': 0.6}
+
+            # Label:
+            #     text: 'Dashboard'
+            #     font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            #     font_size: 40
+            #     x: -450
+            #     y: 250
+            #     size_hint: None, None
+            #     size: self.texture_size
+            #     color: 1, 0.07, 0.58, 1
+
+            # Label:
+            #     text: 'Dashboard'
+            #     font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            #     font_size: 40
+            #     x: -455
+            #     y: 250
+            #     size_hint: None, None
+            #     size: self.texture_size
+            #     color: 1, 0.07, 0.58, 0.5
+
+            # Label:
+            #     text: '_______________________________________________________________________________________________________________________________________________________'
+            #     color: 1,1,1,1
+            #     font_size: 21
+            #     x: -450
+            #     y: 200
+            #     size_hint: None, None
+            #     size: self.texture_size
+
+            HoverMenu:
+                text: 'Find Music by mood'
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: 25
+                x: -450
+                y: 150
+                size_hint: None, None
+                size: self.texture_size
+                background_color: 0.97, 0.945, 0.89, 1
+                background_normal: ""
+                color: 0, 0, 0, 1
+            # on_release: 
+            #     app.root.current = 'Dashboard'
+
+            HoverMenu:
+                text: 'Explore Spotify data'
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: 25
+                x: -70
+                y: 150
+                size_hint: None, None
+                size: self.texture_size
+                background_color: 0.97, 0.945, 0.89, 1
+                color: 0, 0, 0, 1
+            # on_release: 
+            #     app.root.current = 'Dashboard'
+
+            HoverMenu:
+                text: 'AI Recommendations'
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: 25
+                x: 200
+                y: 150
+                size_hint: None, None
+                size: self.texture_size
+                background_color: 0.97, 0.945, 0.89, 1
+                background_normal: ""
+                color: 0, 0, 0, 1
+            # on_release: 
+            #     app.root.current = 'Dashboard'
+
+
+            # Label:
+            #     text: 'HELLO,  ADAN'
+            #     font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            #     font_size: 30
+            #     x: 50
+            #     y: 100
+            #     size_hint: None, None
+            #     size: self.texture_size
+            #     color: 1, 1, 1, 1
+
+            # HoverButton:
+            #     text: "Go back"
+            #     size_hint: None, None
+            #     font_size: 21
+            #     x: 900
+            #     y: -300
+            #     font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            #     size: 200, 60
+            #     background_color: 1, 0, 0.498, 1
+            #     on_release: app.root.current = "Mainwindow"
+
+    # FloatLayout:
+    #     id: sidebar
+    #     orientation: 'vertical'
+    #     size_hint_x: None
+    #     width: 280
+    #     x: self.width  # initially hidden off-screen to the right
+    #     canvas.before:
+    #         Color:
+    #             rgba: 0.2235, 0.0165, 0.12, 1
+    #         Rectangle:
+    #             pos: self.pos
+    #             size: self.size
+
+    #     # FloatLayout:
+    #     Button:
+    #         text: 'Dashboard'
+    #         font_name: "fonts/static/Inter_24pt-Medium.ttf"
+    #         font_size: 25
+    #         pos_hint: {'x': 0.3, 'y': 0.845}
+    #         size_hint: None, None
+    #         size: self.texture_size
+    #         background_color: 0.2235, 0.0165, 0.12, 1
+    #         background_normal: ""
+    #         color: 1, 1, 1, 1
+    #         # on_release: 
+    #         #     app.root.current = 'Dashboard'
+
+    #     Button:
+    #         text: 'Home'
+    #         font_name: "fonts/static/Inter_24pt-Medium.ttf"
+    #         font_size: 25
+    #         size_hint: None, None
+    #         pos_hint: {'x': 0.3, 'y': 0.75}
+    #         background_color: 0.2235, 0.0165, 0.12, 1
+    #         background_normal: ""
+    #         color: 1,1,1,1
+    #         size: self.texture_size
+    #         # on_release: 
+    #         #     app.root.current = 
+
+    #     Button:
+    #         text: 'Logout'
+    #         font_name: "fonts/static/Inter_24pt-Medium.ttf"
+    #         font_size: 25
+    #         pos_hint: {'x': 0.3, 'y': 0.65} #1700, 675
+    #         size_hint: None, None
+    #         background_color: 0.2235, 0.0165, 0.12, 1
+    #         background_normal: ""
+    #         size: self.texture_size
+    #         color: 1, 1, 1, 1
+    #         # on_release:
+    #         #     app.root.current = 'MainScreen'
+
+    #     Image:
+    #         source: 'images/apps.png'
+    #         allow_stretch: False
+    #         keep_ratio: False
+    #         size_hint: 0.7,0.7
+    #         pos_hint: {'x':-0.19, 'y': 0.512}
+    #         color: 1,1,1, 1
+
+    #     Image:
+    #         source: 'images/house-blank.png'
+    #         allow_stretch: False
+    #         keep_ratio: False
+    #         size_hint: 0.7,0.7
+    #         pos_hint: {'x':-0.19, 'y': 0.418}
+    #         color: 1,1,1, 1
+
+    #     Image:
+    #         source: 'images/user-logout.png'
+    #         allow_stretch: False
+    #         keep_ratio: False
+    #         size_hint: 0.7,0.7
+    #         pos_hint: {'x':-0.19, 'y': 0.32}
+    #         color: 1,1,1, 1
+
+    
