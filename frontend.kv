@@ -133,7 +133,7 @@ WindowManager:
 
             HoverButton:
                 text: "LOGIN"
-                font_name: "fonts\static\Inter_18pt-Bold.ttf"
+                font_name: "fonts/static/Inter_18pt-Bold.ttf"
                 size_hint: None, None
                 font_size: 19
                 x: 80
@@ -217,8 +217,6 @@ WindowManager:
             size_hint: None,1
             width: 280
             pos_hint: {'right':1, 'center_y': 0.5}
-            # x: root.width - 225
-            # y: root.height - 832
 
         #------------------------labels options------------------------------
         Label:
@@ -295,7 +293,7 @@ WindowManager:
                 color: 0, 0, 0, 1
 
             Label:
-                text: "Hello, Adan"
+                text: "Heellooo, Adan"
                 font_name: "fonts/static/Inter_24pt-Medium.ttf"
                 font_size: 32
                 x: 220
@@ -394,7 +392,7 @@ WindowManager:
 
         HoverButton:
             text: "BACK"
-            font_name: "fonts\static\Inter_18pt-Bold.ttf"
+            font_name: "fonts/static/Inter_18pt-Bold.ttf"
             size_hint: None, None
             font_size: 19
             x: 80
@@ -402,6 +400,83 @@ WindowManager:
             size: 220, 60
             background_color: 0.529, 0.012, 0.361, 1
             on_release: app.root.current = 'dashboard'
+
+        Label:
+            markup: True
+            text: "What's your vibe today? We've got the music for it."
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 27
+            x: 60
+            y: 870
+            size_hint: None, None
+            size: self.texture_size
+            color: 0, 0, 0, 1
+
+        #--------------------------moods-----------------------------------
+        mainoptions:
+            source: 'images/Group 9.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 130
+            y: 770
+            # on_release: app.root.current = 'screen1'
+
+        mainoptions:
+            source: 'images/Group 10.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 430
+            y: 770
+            # on_release: app.root.current = 'screen2'
+
+        mainoptions:
+            source: 'images/Group 11.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 630
+            y: 770
+            # on_release: app.root.current = 'screen3'
+
+        mainoptions:
+            source: 'images/Group 12.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 80
+            y: 670
+            # on_release: app.root.current = 'screen1'
+
+        mainoptions:
+            source: 'images/Group 13.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 300
+            y: 570
+            # on_release: app.root.current = 'screen2'
+
+        mainoptions:
+            source: 'images/Group 14.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 700
+            y: 570
+            # on_release: app.root.current = 'screen3'
+
+        mainoptions:
+            source: 'images/Group 15.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 200
+            y: 470
+            # on_release: app.root.current = 'screen1'
+
+        mainoptions:
+            source: 'images/Group 16.png'
+            size_hint: None,None
+            size: 225, 42
+            x: 400
+            y: 470
+            # on_release: app.root.current = 'screen2'
+
 <Screen2>:
     name: 'screen2'
 
@@ -415,7 +490,7 @@ WindowManager:
 
         HoverButton:
             text: "BACK"
-            font_name: "fonts\static\Inter_18pt-Bold.ttf"
+            font_name: "fonts/static/Inter_18pt-Bold.ttf"
             size_hint: None, None
             font_size: 19
             x: 80
@@ -436,7 +511,7 @@ WindowManager:
 
         HoverButton:
             text: "BACK"
-            font_name: "fonts\static\Inter_18pt-Bold.ttf"
+            font_name: "fonts/static/Inter_18pt-Bold.ttf"
             size_hint: None, None
             font_size: 19
             x: 80
@@ -444,60 +519,3 @@ WindowManager:
             size: 220, 60
             background_color: 0.529, 0.012, 0.361, 1
             on_release: app.root.current = 'dashboard'
-
-        #--------------------------moods---------------------------------
-        mainoptions:
-            source: 'images/Group 9.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.15, 'y': 0.3}
-            on_release: app.root.current = 'screen1'
-
-        mainoptions:
-            source: 'images/Group 10.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.35, 'y': 0.3}
-            on_release: app.root.current = 'screen2'
-
-        mainoptions:
-            source: 'images/Group 11.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.55, 'y': 0.3}
-            on_release: app.root.current = 'screen3'
-
-        mainoptions:
-            source: 'images/Group 12.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.15, 'y': 0.3}
-            on_release: app.root.current = 'screen1'
-
-        mainoptions:
-            source: 'images/Group 13.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.35, 'y': 0.3}
-            on_release: app.root.current = 'screen2'
-
-        mainoptions:
-            source: 'images/Group 14.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.55, 'y': 0.3}
-            on_release: app.root.current = 'screen3'
-
-        mainoptions:
-            source: 'images/Group 15.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.15, 'y': 0.3}
-            on_release: app.root.current = 'screen1'
-
-        mainoptions:
-            source: 'images/Group 16.png'
-            size_hint: None,None
-            size: 262, 372
-            pos_hint: {'x':0.35, 'y': 0.3}
-            on_release: app.root.current = 'screen2'

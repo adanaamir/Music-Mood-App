@@ -11,6 +11,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.behaviors import ButtonBehavior
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
+from kivy.lang import Builder
+from kivy.factory import Factory
 from hoverbehaviour import HoverBehavior
 import webbrowser, os, threading, time, random
 
@@ -38,15 +40,40 @@ class MainApp(MDApp):
     def build(self):
         load_dotenv()
         start_server()
-        
+
         client_id = os.getenv("CLIENT_ID")
         client_secret = os.getenv("CLIENT_SECRET")
-        self.login = Login(client_id=client_id, client_secret= client_secret)
+        self.login = Login(client_id=client_id, client_secret=client_secret)
         self.login.authenticate_user()
-        
-        self.sm = Builder.load_file('frontend.kv')
+
+        self.sm = self.load_ui()
+        Window.bind(on_key_down=self.on_key_down)
         return self.sm
-    
+
+    def load_ui(self):
+        Builder.unload_file("frontend.kv")
+        return Builder.load_file("frontend.kv")  # returns a ScreenManager
+
+    def on_key_down(self, window, key, scancode, codepoint, modifier):
+        if codepoint == 'r':
+            print("🔁 Reloading KV file...")
+
+            # Unload and reload the KV file
+            Builder.unload_file("frontend.kv")
+            new_ui = Builder.load_file("frontend.kv")
+
+            # Remove old screens
+            self.sm.clear_widgets()
+
+            # Recreate new screens by name using Factory (fresh instances)
+            for screen in new_ui.screens:
+                screen_class = Factory.get(screen.__class__.__name__)
+                new_screen = screen_class(name=screen.name)
+                self.sm.add_widget(new_screen)
+
+            print("✅ Reloaded successfully!")
+
+
     def spotify_login(self):
         self.background_color = [1, 0, 0.498, 1]
         if self.login.auth_url:
