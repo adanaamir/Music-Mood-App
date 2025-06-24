@@ -17,15 +17,6 @@ WindowManager:
             size_hint: 1,1
             pos_hint: {'x': 0, 'y': 0}
 
-        # Image:
-        #     source: 'images/mariasposter.jpeg'
-        #     allow_stretch: True
-        #     keep_ratio: False
-        #     size_hint: 0.5,0.8
-        #     pos_hint: {'x':0.6, 'y': -0.3}
-        #     color: 1,1,1, 1
-            
-
         Widget:       #for opacity of bg image
             size_hint: 1, 1
             pos_hint: {'x': 0, 'y': 0}
@@ -166,6 +157,14 @@ WindowManager:
                 pos: self.pos
                 size: self.size
 
+        Image:
+            source: 'images\Rectangle 23 (1).png'
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 0.75,1
+            width: 280
+            pos_hint: {'right':1, 'center_y': 0.5}
+
         Label:
             id: vibe_label 
             text: ""
@@ -204,42 +203,20 @@ WindowManager:
             on_release: app.root.current = 'screen2'
 
         mainoptions:
-            source: 'images/Group 6.png'
+            source: 'images/Group 25.png'
             size_hint: None,None
             size: 262, 372
             pos_hint: {'x':0.55, 'y': 0.3}
             on_release: app.root.current = 'screen3'
 
-        Image:
-            source: 'images/Sideboard.png'
-            allow_stretch: True
-            keep_ratio: False
-            size_hint: None,1
-            width: 280
-            pos_hint: {'right':1, 'center_y': 0.5}
+        BasicImageHover:
+            source: 'images/Group 28.png'
+            size_hint: None,None
+            size: 170, 44
+            pos_hint: {'x':0.85, 'y': 0.85}
+            on_release: app.root.current = 'Mainwindow'
 
-        #------------------------labels options------------------------------
-        Label:
-            markup: True
-            text: '               AI\nrecommendations\n    (coming soon)'
-            font_name: "fonts/static/Inter_24pt-Medium.ttf"
-            font_size: 25
-            x: 1080
-            y: 420
-            size_hint: None, None
-            size: self.texture_size
-            color: 0, 0, 0, 1
-
-        Label:
-            markup: True
-            text: "A smart music recomme-\nndation system powered\nby AI. "
-            font_name: "fonts/static/Inter_24pt-Medium.ttf"
-            font_size: 19
-            x: 1074
-            y: 337
-            size_hint: None, None
-            size: self.texture_size
-            color: 0, 0, 0, 1
+        
             
 #         SlidingDashboard:
 #             id: sliding_dashboard
@@ -283,7 +260,7 @@ WindowManager:
                 color: 0, 0, 0, 1
 
             Label:
-                text: '_______________________________________________________________________________________________________________________________________________________'
+                text: '__________________________________________________________________________________________________________________________________________________'
                 color: 1,1,1,1
                 font_size: 21
                 x: -490
@@ -293,7 +270,7 @@ WindowManager:
                 color: 0, 0, 0, 1
 
             Label:
-                text: "Heellooo, Adan"
+                text: "Hello, Adan"
                 font_name: "fonts/static/Inter_24pt-Medium.ttf"
                 font_size: 32
                 x: 220
@@ -302,86 +279,120 @@ WindowManager:
                 size: self.texture_size
                 color: 0, 0, 0, 1
 
-    # FloatLayout:
-    #     id: sidebar
-    #     orientation: 'vertical'
-    #     size_hint_x: None
-    #     width: 280
-    #     x: self.width  # initially hidden off-screen to the right
-    #     canvas.before:
-    #         Color:
-    #             rgba: 0.2235, 0.0165, 0.12, 1
-    #         Rectangle:
-    #             pos: self.pos
-    #             size: self.size
+# #--------------------SIDE DASHBOARD-------------------------------
+#     FloatLayout:
+#         id: sidebar
+#         orientation: 'vertical'
+#         size_hint_x: None
+#         width: 280
+#         canvas.before:
+#             Color:
+#                 rgba: 0.2235, 0.0165, 0.12, 1
+#             Rectangle:
+#                 pos: self.pos
+#                 size: self.size
 
-    #     # FloatLayout:
-    #     Button:
-    #         text: 'Dashboard'
-    #         font_name: "fonts/static/Inter_24pt-Medium.ttf"
-    #         font_size: 25
-    #         pos_hint: {'x': 0.3, 'y': 0.845}
-    #         size_hint: None, None
-    #         size: self.texture_size
-    #         background_color: 0.2235, 0.0165, 0.12, 1
-    #         background_normal: ""
-    #         color: 1, 1, 1, 1
-    #         # on_release: 
-    #         #     app.root.current = 'Dashboard'
+#         Button:
+#             text: 'Dashboard'
+#             font_name: "fonts/static/Inter_24pt-Medium.ttf"
+#             font_size: 25
+#             pos_hint: {'x': 0.3, 'y': 0.845}
+#             size_hint: None, None
+#             size: self.texture_size
+#             background_color: 0.2235, 0.0165, 0.12, 1
+#             background_normal: ""
+#             color: 1, 1, 1, 1
+#             on_release:
+#                 app.root.current = 'Dashboard'
 
-    #     Button:
-    #         text: 'Home'
-    #         font_name: "fonts/static/Inter_24pt-Medium.ttf"
-    #         font_size: 25
-    #         size_hint: None, None
-    #         pos_hint: {'x': 0.3, 'y': 0.75}
-    #         background_color: 0.2235, 0.0165, 0.12, 1
-    #         background_normal: ""
-    #         color: 1,1,1,1
-    #         size: self.texture_size
-    #         # on_release: 
-    #         #     app.root.current = 
+#         Button:
+#             text: 'Home'
+#             font_name: "fonts/static/Inter_24pt-Medium.ttf"
+#             font_size: 25
+#             size_hint: None, None
+#             pos_hint: {'x': 0.3, 'y': 0.75}
+#             background_color: 0.2235, 0.0165, 0.12, 1
+#             background_normal: ""
+#             color: 1,1,1,1
+#             size: self.texture_size
+#             # on_release: 
+#             #     app.root.current = 
 
-    #     Button:
-    #         text: 'Logout'
-    #         font_name: "fonts/static/Inter_24pt-Medium.ttf"
-    #         font_size: 25
-    #         pos_hint: {'x': 0.3, 'y': 0.65} #1700, 675
-    #         size_hint: None, None
-    #         background_color: 0.2235, 0.0165, 0.12, 1
-    #         background_normal: ""
-    #         size: self.texture_size
-    #         color: 1, 1, 1, 1
-    #         # on_release:
-    #         #     app.root.current = 'MainScreen'
+#         Button:
+#             text: 'Logout'
+#             font_name: "fonts/static/Inter_24pt-Medium.ttf"
+#             font_size: 25
+#             pos_hint: {'x': 0.3, 'y': 0.65} #1700, 675
+#             size_hint: None, None
+#             background_color: 0.2235, 0.0165, 0.12, 1
+#             background_normal: ""
+#             size: self.texture_size
+#             color: 1, 1, 1, 1
+#             # on_release:
+#             #     app.root.current = 'MainScreen'
 
-    #     Image:
-    #         source: 'images/apps.png'
-    #         allow_stretch: False
-    #         keep_ratio: False
-    #         size_hint: 0.7,0.7
-    #         pos_hint: {'x':-0.19, 'y': 0.512}
-    #         color: 1,1,1, 1
+#         Image:
+#             source: 'images/apps.png'
+#             allow_stretch: False
+#             keep_ratio: False
+#             size_hint: 0.7,0.7
+#             pos_hint: {'x':-0.19, 'y': 0.512}
+#             color: 1,1,1, 1
 
-    #     Image:
-    #         source: 'images/house-blank.png'
-    #         allow_stretch: False
-    #         keep_ratio: False
-    #         size_hint: 0.7,0.7
-    #         pos_hint: {'x':-0.19, 'y': 0.418}
-    #         color: 1,1,1, 1
+#         Image:
+#             source: 'images/house-blank.png'
+#             allow_stretch: False
+#             keep_ratio: False
+#             size_hint: 0.7,0.7
+#             pos_hint: {'x':-0.19, 'y': 0.418}
+#             color: 1,1,1, 1
 
-    #     Image:
-    #         source: 'images/user-logout.png'
-    #         allow_stretch: False
-    #         keep_ratio: False
-    #         size_hint: 0.7,0.7
-    #         pos_hint: {'x':-0.19, 'y': 0.32}
-    #         color: 1,1,1, 1
+#         Image:
+#             source: 'images/user-logout.png'
+#             allow_stretch: False
+#             keep_ratio: False
+#             size_hint: 0.7,0.7
+#             pos_hint: {'x':-0.19, 'y': 0.32}
+#             color: 1,1,1, 1
+
+<TrackCard>:
+    size_hint: None, None
+    size: 330, 60
+    orientation: 'horizontal'
+    spacing: 10
+    padding: [15, 0, 15, 0]
+    canvas.before:
+        Color:
+            rgba:  0.3608, 0.2039, 0.2039, 1
+        RoundedRectangle: 
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+    Label:
+        id: track_label
+        text: ""
+        font_name: "fonts/static/Inter_24pt-Medium.ttf"
+        font_size: 20
+        halign: 'left'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 1
+        height: self.texture_size[1]
+        color: 1,1,1,1
+        
+    BasicButtonHover:
+        id: spotify_button
+        size_hint: None, None
+        size: 70, 70
+        background_normal: 'images/spotify.png'
+        background_down: 'images/spotify.png'
+        background_color: 1, 1, 1, 1
 
 <Screen1>:
     name: 'screen1'
 
+    #--------------------SIDE DASHBOARD-------------------------------        
     FloatLayout:
         canvas.before:
             Color:
@@ -389,6 +400,69 @@ WindowManager:
             Rectangle: 
                 pos: self.pos
                 size: self.size
+
+        ScrollView:
+            size_hint: 1, 1
+            pos_hint: {"x": 0.02, "y": -0.62}
+            GridLayout:
+                id: tracks_container
+                cols: 4
+                spacing: 40
+                padding: 20
+                size_hint_y: None
+                row_default_height: 60
+                row_force_default: True
+                height: self.minimum_height
+
+        Image:
+            source: 'images/Sideboard.png'
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: None,1
+            width: 280
+            pos_hint: {'right':1, 'center_y': 0.5}
+
+        BasicButtonHover:
+            text: 'Home'
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 25
+            pos_hint: {'x': 0.9, 'y': 0.7}
+            size_hint: None, None
+            size: self.texture_size
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            color: 1, 1, 1, 1
+            # on_release:
+            #     app.root.current = 'Dashboard'
+
+        BasicButtonHover:
+            text: 'Logout'
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 25
+            pos_hint: {'x': 0.9, 'y': 0.64} 
+            size_hint: None, None
+            background_color: 0, 0, 0, 0
+            background_normal: ""
+            size: self.texture_size
+            color: 1, 1, 1, 1
+            # on_release:
+            #     app.root.current = 'MainScreen'
+
+        Image:
+            source: 'images/house-blank.png'
+            allow_stretch: False
+            keep_ratio: False
+            size_hint: 0.7,0.7
+            pos_hint: {'x':0.525, 'y': 0.37}
+            color: 1,1,1, 1
+
+        Image:
+            source: 'images/user-logout.png'
+            allow_stretch: False
+            keep_ratio: False
+            size_hint: 0.7,0.7
+            pos_hint: {'x':0.525, 'y': 0.31}
+            color: 1,1,1, 1
 
         HoverButton:
             text: "BACK"
@@ -412,30 +486,63 @@ WindowManager:
             size: self.texture_size
             color: 0, 0, 0, 1
 
-        #--------------------------moods-----------------------------------
+        Label:
+            id: mood_select_label 
+            text: ""
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 27
+            x: 60
+            y: 460
+            size_hint: None, None
+            size: self.texture_size
+            color: 0, 0, 0, 1
+
+        Label:
+            id: track_text 
+            text: ""
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 24
+            x: 60
+            y: 370
+            size_hint: None, None
+            size: self.texture_size
+            color: 0, 0, 0, 1
+
+        Label:
+            id: random_msg 
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            text: ""
+            font_size: 25
+            x: -670
+            y: -40
+            color: 0.408, 0.235, 0.235, 1
+        
         mainoptions:
             source: 'images/Group 9.png'
             size_hint: None,None
             size: 225, 42
             x: 130
             y: 770
-            # on_release: app.root.current = 'screen1'
+            mood_name: "Happy"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 10.png'
             size_hint: None,None
             size: 225, 42
-            x: 430
+            x: 410
             y: 770
-            # on_release: app.root.current = 'screen2'
+            mood_name: "Sad"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 11.png'
             size_hint: None,None
             size: 225, 42
-            x: 630
+            x: 700
             y: 770
-            # on_release: app.root.current = 'screen3'
+            mood_name: "Chill"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 12.png'
@@ -443,39 +550,51 @@ WindowManager:
             size: 225, 42
             x: 80
             y: 670
-            # on_release: app.root.current = 'screen1'
+            mood_name: "Peaceful"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 13.png'
             size_hint: None,None
             size: 225, 42
-            x: 300
-            y: 570
-            # on_release: app.root.current = 'screen2'
+            x: 370
+            y: 670
+            mood_name: "Energetic"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 14.png'
             size_hint: None,None
             size: 225, 42
-            x: 700
-            y: 570
-            # on_release: app.root.current = 'screen3'
+            x: 660
+            y: 670
+            mood_name: "Focused"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 15.png'
             size_hint: None,None
             size: 225, 42
             x: 200
-            y: 470
-            # on_release: app.root.current = 'screen1'
+            y: 570
+            mood_name: "Angry"
+            on_release: app.enterMood(self.mood_name)
 
         mainoptions:
             source: 'images/Group 16.png'
             size_hint: None,None
             size: 225, 42
-            x: 400
-            y: 470
-            # on_release: app.root.current = 'screen2'
+            x: 500
+            y: 570
+            mood_name: "Motivational"
+            on_release: app.enterMood(self.mood_name)
+
+        BasicImageHover:
+            source: 'images/Group 27.png'
+            size_hint: None,None
+            size: 143, 44
+            pos_hint: {'x':0.7, 'y': 0.85}
+            on_release: app.root.current = 'Mainwindow'
 
 <Screen2>:
     name: 'screen2'

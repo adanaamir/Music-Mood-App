@@ -4,7 +4,6 @@ from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth 
 from spotipy.oauth2 import SpotifyOAuth
 
-#front end
 class UserOptions:
     def __init__(self):
         self.op = None
