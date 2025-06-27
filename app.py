@@ -59,6 +59,19 @@ class MainApp(MDApp):
     def load_ui(self):
         Builder.unload_file("frontend.kv")
         return Builder.load_file("frontend.kv") 
+    
+    def scroll_artist_right(self):
+        scroll = self.root.get_screen('screen1').ids.artist_scroll
+        new_x = min(scroll.scroll_x + 0.2, 1.01)
+        Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll)  #scrolls right by 20%
+
+    def scroll_artist_left(self):
+        scroll = self.root.get_screen('screen1').ids.artist_scroll
+        if scroll.scroll_x <= 0.01:
+            return
+        new_x = min(scroll.scroll_x - 0.2, 0)
+        Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll) 
+
 
     #---------------------auto reload current screen------------------------
     def on_key_down(self, window, key, scancode, codepoint, modifier):
@@ -140,6 +153,18 @@ class MainApp(MDApp):
         self.dot_event.cancel()
         screen = self.sm.get_screen("screen1")
         screen.ids.random_msg.text = ""
+        
+        #setting the artist frame to 0
+        screen.ids.artist_scroll.clear_widgets()
+        
+        screen.ids.artist_scroll_r.opacity = 0
+        screen.ids.artist_scroll_r.size_hint = (0, 0)
+        screen.ids.artist_scroll_r.size = (0, 0)
+        
+        screen.ids.artist_scroll_l.opacity = 0
+        screen.ids.artist_scroll_l.size_hint = (0, 0)
+        screen.ids.artist_scroll_l.size = (0, 0)
+        
         threading.Thread(target=self.getPublicRecommendations()).start()
     
     #----------------------------displaying music----------------------------
@@ -283,15 +308,15 @@ class HoverButton(Button, HoverBehavior):
         super().__init__(**kwargs)
         self.background_normal = ''
         self.background_down = ''
-        self.background_color = [0.529, 0.012, 0.361, 1]
+        self.background_color = [0.384, 0.141, 0.353, 1]
 
     def on_enter(self):
         Window.set_system_cursor("hand")
-        self.background_color = [0.373, 0.008, 0.255, 1]
+        self.background_color = [0.302, 0.071, 0.192, 1]
         
     def on_leave(self):
         Window.set_system_cursor("arrow")
-        self.background_color = [0.529, 0.012, 0.361, 1]
+        self.background_color = [0.384, 0.141, 0.353, 1]
         
 class HoverMenu(Button, HoverBehavior):
     def __init__(self, **kwargs):
@@ -305,18 +330,6 @@ class HoverMenu(Button, HoverBehavior):
         
     def on_leave(self):
         Window.set_system_cursor("arrow")
-
-class SlidingDashboard(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.menu_open = False
-        
-    def toggle_menu(self):
-        if self.menu_open:
-            Animation(x=self.width, duration=0.3).start(self.ids.sidebar)
-        else:
-            Animation(x=self.width - 280, duration=0.3).start(self.ids.sidebar)
-        self.menu_open = not self.menu_open
         
 class mainoptions(HoverBehavior, ButtonBehavior, Image):
     mood_name = StringProperty("")
@@ -357,5 +370,6 @@ class BasicButtonHover(Button, HoverBehavior):
         
     def on_leave(self):
         Window.set_system_cursor("arrow")
+        
 
 MainApp().run()
