@@ -54,7 +54,7 @@ WindowManager:
                 Color:
                     rgba: 0, 0, 0, 0.2
                 RoundedRectangle:
-                    pos: 152 + 2, -173 - 2
+                    pos: 152 + 2, -193 - 2
                     size: 400, 45
                     radius: [2]
 
@@ -62,17 +62,17 @@ WindowManager:
                 Color:
                     rgba: 0, 0, 0, 0.2
                 RoundedRectangle:
-                    pos: 152 + 2, -103 - 2
+                    pos: 152 + 2, -123 - 2
                     size: 220, 60
-                    radius: [3]
+                    radius: [18]
 
                 #SUBMIT
                 Color:
                     rgba: 0, 0, 0, 0.2
                 RoundedRectangle:
-                    pos: 152 + 2, -263 - 2
+                    pos: 152 + 2, -283 - 2
                     size: 220, 60
-                    radius: [3]
+                    radius: [18]
 
             Label:
                 markup: True     #for enablng colors for specific post
@@ -86,11 +86,12 @@ WindowManager:
                 color: 0, 0, 0, 1
         
             Label:
-                text: "Discover music you'll love"
+                markup: True
+                text: "Find the soundtrack to your story, where your mood meets melody— \none song, one feeling at a time"
                 font_name: "fonts/static/Inter_24pt-Medium.ttf"
-                font_size: "18sp"
+                font_size: "16sp"
                 x: 150
-                y: 10
+                y: -20
                 size_hint: None, None
                 size: self.texture_size
                 color: 0, 0, 0, 1
@@ -138,7 +139,7 @@ WindowManager:
                 size_hint: None, None
                 size: 400, 45
                 x: 150
-                y: -170
+                y: -190
                 font_size: 18
                 multiline: True
                 foreground_color: 0, 0, 0, 1        
@@ -154,22 +155,42 @@ WindowManager:
                 size_hint: None, None
                 font_size: 19
                 x: 150
-                y: -100
+                y: -120
                 size: 220, 60
-                background_color: 0.384, 0.141, 0.353, 1
+                background_color: 0, 0, 0, 0
+                background_normal: ''
+                background_down: ''
                 on_release: app.spotify_login()
+
+                canvas.before:
+                    Color:
+                        rgba: self.bg_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: self.radius 
 
             HoverButton:
                 text: "SUBMIT"
+                font_name: "fonts/static/Inter_18pt-Bold.ttf"
                 size_hint: None, None
                 font_size: 21
                 x: 150
-                y: -260
-                font_name: "fonts/static/Inter_18pt-Bold.ttf"
+                y: -280
                 size: 220, 60
-                background_color: 0.384, 0.141, 0.353, 1
+                background_color: 0, 0, 0, 0
+                background_normal: ''
+                background_down: ''
                 on_release:
                     app.check_redirect()
+
+                canvas.before:
+                    Color:
+                        rgba: self.bg_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: self.radius
 
 #--------------------------------SCREEN 2 DASHBOARD--------------------------------------
 <Dashboard>:
@@ -269,6 +290,16 @@ WindowManager:
 
             Label:
                 text: "Hello, Adan"
+                font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                font_size: 32
+                x: 220
+                y: 180
+                size_hint: None, None
+                size: self.texture_size
+                color: 0, 0, 0, 1
+
+            Label:
+                text: "DISCOVER NEW MUSIC"
                 font_name: "fonts/static/Inter_24pt-Medium.ttf"
                 font_size: 32
                 x: 220

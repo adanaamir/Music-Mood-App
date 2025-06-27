@@ -11,6 +11,7 @@ from kivy.uix.button import Button
 from kivy.animation import Animation
 from functools import partial
 from kivy.uix.image import Image
+from kivy.properties import ListProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
@@ -304,19 +305,24 @@ class WindowManager(ScreenManager):
     pass
     
 class HoverButton(Button, HoverBehavior):
+    radius = ListProperty([18])
+    bg_color = ListProperty([0.384, 0.141, 0.353, 1])
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.background_normal = ''
         self.background_down = ''
-        self.background_color = [0.384, 0.141, 0.353, 1]
+        self.background_color = 0,0,0,0
 
     def on_enter(self):
         Window.set_system_cursor("hand")
-        self.background_color = [0.302, 0.071, 0.192, 1]
+        self.bg_color = [0.302, 0.071, 0.192, 1]
+        self.radius = [18]
         
     def on_leave(self):
         Window.set_system_cursor("arrow")
-        self.background_color = [0.384, 0.141, 0.353, 1]
+        self.bg_color = [0.384, 0.141, 0.353, 1]
+        self.radius = [18]
         
 class HoverMenu(Button, HoverBehavior):
     def __init__(self, **kwargs):
