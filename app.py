@@ -168,7 +168,7 @@ class MainApp(MDApp):
         
         threading.Thread(target=self.getPublicRecommendations()).start()
     
-    #----------------------------displaying music----------------------------
+    #----------------------------displaying TRACKS----------------------------
     def getPublicRecommendations(self):    
         screen = self.sm.get_screen("screen1") 
         container = screen.ids.tracks_container
@@ -219,6 +219,21 @@ class MainApp(MDApp):
 
                 container.add_widget(track_card)
                 
+                # while True:
+                #     try:
+                #         if option == "C":
+                #             print("\nGetting more recommendations")
+                #             for _ in range(4):
+                #                 time.sleep(0.5)
+                #                 print(".", end="",flush=True)
+                #             print()
+                #             self.getPublicRecommendations()
+                            
+                #         else:
+                #             print(f"\033[31mIncorrect option.\033[0m")
+                #     except Exception as e:
+                #         print(f"\033[31m{e}\033[0m")
+                        
         else:
             error_msg = f"\033[31mError fetching genres: {response.status_code}\033[0m"
             print(error_msg)
@@ -254,41 +269,6 @@ class Login:
             return self.token_info['access_token']
         else:
             raise ValueError(f"\033[31mError: No token has been fetched. Please Login...\033[0m")
-
-    #     while True:
-    #         try:
-    #             option = input("\nType:\n\"C\" to get more recommendations \n\"E\" to exit \n\"M\" to change mood \n\"S\" to view your Spotify details:\n").upper()
-                        
-    #             if option == "C":
-    #                 print("\nGetting more recommendations")
-    #                 for _ in range(4):
-    #                     time.sleep(0.5)
-    #                     print(".", end="",flush=True)
-    #                 print()
-    #                 self.getPublicRecommendations()
-
-    #             elif option == "S":
-    #                 user_det = UserSpotifyDetails(client_id, client_secret)
-    #                 user_det.userOptions()
-    #                 user_det.userChooseOption()
-
-    #             elif option == "E":
-    #                 print("\nExiting the program")
-    #                 for _ in range(4):
-    #                     time.sleep(0.5)
-    #                     print(".", end="",flush=True)
-    #                 print()
-    #                 exit()
-
-    #             elif option == "M":
-    #                 self.enterMood()
-    #                 self.getPublicRecommendations()
-    #             else:
-    #                 print(f"\033[31mIncorrect option.\033[0m")
-    #         except Exception as e:
-    #             print(f"\033[31m{e}\033[0m")
-
-
 
 class Dashboard(Screen):
     pass
