@@ -352,8 +352,8 @@ WindowManager:
 
 <TrackCard>:
     size_hint: None, None
-    size: 330, 60
-    orientation: 'horizontal'
+    size: 360, 90
+    orientation: 'horizontal' 
     spacing: 10
     padding: [15, 0, 15, 0]
     canvas.before:
@@ -367,7 +367,7 @@ WindowManager:
     Label:
         id: track_label
         text: ""
-        font_name: "fonts/static/Inter_24pt-Medium.ttf"
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
         font_size: 20
         halign: 'left'
         valign: 'middle'
@@ -377,7 +377,7 @@ WindowManager:
         color: 1,1,1,1
         padding: [0, 50]
         
-    BasicImageHover:
+    mainoptions:
         id: spotify_button
         source: 'images/spotify1.png'
         size_hint: None, None
@@ -413,7 +413,6 @@ WindowManager:
                         pos: self.pos
                         size: self.size
 
-                #horizontal scroll of artist images
                 GridLayout:
                     id: tracks_container
                     cols: 4
@@ -682,6 +681,168 @@ WindowManager:
                     pos_hint: {'x':0.78, 'y': 0.9}
                     on_release: app.root.current = 'dashboard'
 
+<UserDetailsTrackCard>:
+    size_hint: None, None
+    size: 679, 114
+    orientation: 'horizontal'
+    spacing: 10
+    padding: [15, 0, 15, 0]
+    canvas.before:
+        Color:
+            rgba:  0.851, 0.851, 0.851, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+    Label:
+        id: user_details_tracks
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'left'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 0.85
+        height: self.texture_size[1]
+        color: 0,0,0,1
+        padding: [0, 50]
+        
+    BasicImageHover:
+        id: view_button
+        source: 'images/Group 48.png'
+        size_hint: None, None
+        allow_stretch: True
+        keep_ratio: False
+        pos_hint: {'x': 0, 'y': 0.25}
+        size: 151, 52
+        background_down: 'images/Group 48.png'
+
+<artistsFollowedTrackCard>:
+    size_hint: None, None
+    size: 479, 90
+    orientation: 'horizontal'
+    spacing: 10
+    padding: [15, 0, 15, 0]
+    canvas.before:
+        Color:
+            rgba:  0.851, 0.851, 0.851, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+    Label:
+        id: artistsfollowedtext
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'left'
+        valign: 'middle'
+        text_size: self.size        
+        size_hint: 1, 1
+        padding_x: 20
+        color: 0, 0, 0, 1
+
+
+    Label:
+        id: topartiststrack
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 0.85
+        max_lines: 2
+        height: self.texture_size[1]
+        color: 0,0,0,1
+        padding: 0
+
+    Label:
+        id: curr_playliststext
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 0.85
+        max_lines: 2
+        height: self.texture_size[1]
+        color: 0,0,0,1
+        padding: 0
+
+    Label:
+        id: liked_albumstext
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 1
+        max_lines: 2
+        color: 0, 0, 0, 1
+        padding: [0, 0]
+
+    Label:
+        id: liked_trackstext
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 1
+        max_lines: 2
+        color: 0, 0, 0, 1
+        padding: [0, 0]
+
+
+
+<recentlyPlayedTrackCard>:
+    size_hint: None, None
+    size: 479, 90
+    orientation: 'horizontal'
+    spacing: 10
+    padding: [15, 0, 15, 0]
+    canvas.before:
+        Color:
+            rgba:  0.851, 0.851, 0.851, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+    Label:
+        id: recentlyplayedTrackText
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 0.85
+        max_lines: 2
+        height: self.texture_size[1]
+        color: 0,0,0,1
+        padding: [0, 50]
+
+    Label:
+        id: current_playing_trackstext
+        text: ""
+        font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
+        text_size: self.size
+        size_hint_x: 0.85
+        max_lines: 2
+        height: self.texture_size[1]
+        color: 0,0,0,1
+        padding: [0, 50]
+
 <Screen2>:
     name: 'screen2'
 
@@ -698,14 +859,104 @@ WindowManager:
 
             FloatLayout:
                 size_hint_y: None
-                height: 1500
+                height: 3000
 
                 canvas.before:
                     Color:
                         rgba: 0.545, 0.639, 0.702, 1
-                    Rectangle: 
+                    Rectangle:
                         pos: self.pos
                         size: self.size
+
+                GridLayout:
+                    id: tracks_container
+                    cols: 2
+                    spacing: 100
+                    padding: [190, 100, 0, -430]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks2_container
+                    cols: 3
+                    spacing: 100
+                    padding: [150, 100, 0, 400]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks3_container
+                    cols: 1
+                    spacing: 100
+                    padding: [720, 100, 0, 1550]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks4_container
+                    cols: 3
+                    spacing: 100
+                    padding: [150, 100, 0, 930]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks5_container
+                    cols: 3
+                    spacing: 100
+                    padding: [140, 100, 0, 1330]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks6_container
+                    cols: 3
+                    spacing: 100
+                    padding: [120, 100, 0, 1530]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks6part_container
+                    cols: 1
+                    spacing: 100
+                    padding: [690, 100, 0, 1530]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks7_container
+                    cols: 3
+                    spacing: 100
+                    padding: [120, 100, 0, 390]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
+
+                GridLayout:
+                    id: tracks8_container
+                    cols: 3
+                    spacing: 100
+                    padding: [710, 100, 0, 1550]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
 
                 Image:
                     source: 'images/halfbluebox.png'
@@ -713,7 +964,7 @@ WindowManager:
                     keep_ratio: False
                     size: 1463, 520
                     size_hint: 1,None
-                    pos_hint: {'x':0, 'y': 0.655}
+                    pos_hint: {'x':0, 'y': 0.827}
 
                 Image:
                     source: 'images/Group 36.png'
@@ -721,7 +972,7 @@ WindowManager:
                     keep_ratio: False
                     size: 1600, 56
                     size_hint: None,None
-                    pos_hint: {'x':0.04, 'y': 0.93}
+                    pos_hint: {'x':0.04, 'y': 0.967}
 
                 Image:
                     source: 'images/border.png'
@@ -729,13 +980,13 @@ WindowManager:
                     keep_ratio: False
                     size: 2010, 56
                     size_hint: None,None
-                    pos_hint: {'x':0, 'y': 0.62}
+                    pos_hint: {'x':0, 'y': 0.81}
 
                 BasicButtonHover:
                     text: 'Home'
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 25
-                    pos_hint: {'x': 0.35, 'y': 0.938}
+                    pos_hint: {'x': 0.35, 'y': 0.971}
                     size_hint: None, None
                     size: self.texture_size
                     background_color: 0, 0, 0, 0
@@ -747,7 +998,7 @@ WindowManager:
                     text: 'Logout'
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 25
-                    pos_hint: {'x': 0.5, 'y': 0.938} 
+                    pos_hint: {'x': 0.5, 'y': 0.971} 
                     size_hint: None, None
                     background_color: 0, 0, 0, 0
                     background_normal: ""
@@ -761,7 +1012,7 @@ WindowManager:
                     allow_stretch: False
                     keep_ratio: False
                     size_hint: 0.7,0.7
-                    pos_hint: {'x':-0.015, 'y': 0.6}
+                    pos_hint: {'x':-0.015, 'y': 0.627}
                     color: 0,0,0, 1
 
                 Image:
@@ -769,7 +1020,7 @@ WindowManager:
                     allow_stretch: False
                     keep_ratio: False
                     size_hint: 0.7,0.7
-                    pos_hint: {'x':0.135, 'y': 0.6}
+                    pos_hint: {'x':0.135, 'y': 0.627}
                     color: 0,0,0, 1
 
                 Label:
@@ -778,83 +1029,266 @@ WindowManager:
                     font_name: "fonts/static/Inter_24pt-Bold.ttf"
                     font_size: 48
                     x: 100
-                    y: 1150
+                    y: 2650
                     size_hint: None, None
                     size: self.texture_size
                     color: 1, 1, 1, 1
 
-                BasicImageHover:
+                #---------------------------- USER DETAILS OPTIONS------------------------------------
+
+                Image:
                     source: 'images/Group 37.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.1, 'y': 0.55}
+                    pos_hint: {'x':0.1, 'y': 0.78}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 38.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.33, 'y': 0.55}
+                    pos_hint: {'x':0.33, 'y': 0.78}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 39.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.56, 'y': 0.55}
+                    pos_hint: {'x':0.56, 'y': 0.78}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 40.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.79, 'y': 0.55}
+                    pos_hint: {'x':0.79, 'y': 0.78}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 41.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.1, 'y': 0.25}
+                    pos_hint: {'x':0.1, 'y': 0.64}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 42.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.33, 'y': 0.25}
+                    pos_hint: {'x':0.33, 'y': 0.64}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 43.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.56, 'y': 0.25}
+                    pos_hint: {'x':0.56, 'y': 0.64}
 
-                BasicImageHover:
+                Image:
                     source: 'images/Group 44.png'
                     allow_stretch: True
                     keep_ratio: False
                     size_hint: None,None
                     size: 249, 261
-                    pos_hint: {'x':0.79, 'y': 0.25}
+                    pos_hint: {'x':0.79, 'y': 0.64}
 
                 BasicImageHover:
                     source: 'images/blue back.png'
                     size_hint: None,None
                     size: 150, 50
-                    pos_hint: {'x':0.78, 'y': 0.85}
+                    pos_hint: {'x':0.78, 'y': 0.93}
                     on_release: app.root.current = 'dashboard'
-                
 
+                #--------------------------------- VIEW BUTTONS --------------------------------------
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 230
+                    y: 2270
+                    size: 171, 50
+                    background_down: 'images/view.png'
+                    on_release: app.viewTopTracks()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 670
+                    y: 2270
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.viewArtistsFollowed()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 1110
+                    y: 2270
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.viewRecentlyPlayed()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 1560
+                    y: 2270
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.usersTopArtists()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 230
+                    y: 1850
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.viewCurrentPlaylists()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 670
+                    y: 1850
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.viewSavedAlbums()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 1110
+                    y: 1850
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.viewSavedTracks()
+
+                mainoptions:
+                    source: 'images/view.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: False
+                    x: 1560
+                    y: 1850
+                    size: 171, 50
+                    background_down: 'images/spotify1.png'
+                    on_release: app.viewCurrentlyPlaying()   
+
+                #-------------------------DISPLAYING USER DETAILS TRACKS------------------------
+                Label:
+                    id: user_details_tracks 
+                    text: ""
+                    font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                    font_size: 24
+                    x: 80
+                    y: 1255
+                    size_hint: None, None
+                    size: self.texture_size
+                    color: 0, 0, 0, 1     
+
+                Label:
+                    id: fetchingtrackstext 
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: artistsfollowed 
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: recentlyplayed 
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: topartists
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: currentplaylists
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: liked_albums
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: liked_tracks
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: currently_playing_track
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Regular.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 240
+                    color: 0, 0, 0, 1 
+
+                Label:
+                    id: notrackplaying
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-Medium.ttf"
+                    text: ""
+                    font_size: 30
+                    x: -10
+                    y: 180
+                    color: 0, 0, 0, 1 
+                    
 <Screen3>:
     name: 'screen3'
 

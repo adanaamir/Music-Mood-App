@@ -22,7 +22,8 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.factory import Factory
 from hoverbehaviour import HoverBehavior
-import webbrowser, os, threading, time, random, requests
+import webbrowser, os, threading, time, random, requests, spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 #-----------------------------------flask for redirecting------------------------------------------------
 app = Flask(__name__)
@@ -52,6 +53,18 @@ class MainApp(MDApp):
         self.client_secret = os.getenv("CLIENT_SECRET")
         self.login = Login(client_id=self.client_id, client_secret=self.client_secret)
         self.login.authenticate_user()
+        self.redirect_url = "http://localhost:8080/callback"
+        self.scope = (
+                "user-top-read "
+                "user-follow-read "
+                "playlist-read-private "
+                "user-read-recently-played "
+                "user-library-read "
+                "user-read-playback-state"
+                )
+        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_url, scope=self.scope),
+            requests_timeout=10, retries=5, status_retries=5, backoff_factor=0.5
+        )
 
         self.sm = self.load_ui()
         Window.bind(on_key_down=self.on_key_down)
@@ -240,7 +253,201 @@ class MainApp(MDApp):
     
     def open_spotify(self, url, *args):
         webbrowser.open(url)
+        
+    def resetScreen2(self):
+        screen = self.sm.get_screen("screen2")
+        
+        #-----------------------------CLEARING LABELS-------------------------------
+        screen.ids.fetchingtrackstext.text = ""
+        screen.ids.artistsfollowed.text = ""
+        screen.ids.recentlyplayed.text = ""
+        screen.ids.topartists.text = ""
+        screen.ids.currentplaylists.text = ""
+        screen.ids.liked_albums.text = ""
+        screen.ids.liked_tracks.text = ""
+        screen.ids.currently_playing_track.text = ""
+        screen.ids.notrackplaying.text = ""
+        
+        #-----------------------------CLEARING TRACKS----------------------------------    
+        screen.ids.tracks_container.clear_widgets()
+        screen.ids.tracks2_container.clear_widgets()
+        screen.ids.tracks3_container.clear_widgets()
+        screen.ids.tracks4_container.clear_widgets()
+        screen.ids.tracks5_container.clear_widgets()
+        screen.ids.tracks6_container.clear_widgets()
+        screen.ids.tracks6part_container.clear_widgets()
+        screen.ids.tracks7_container.clear_widgets()
+        screen.ids.tracks8_container.clear_widgets()
+    
+    
+    def viewTopTracks(self):
+        self.resetScreen2()
+        
+        screen = self.sm.get_screen("screen2")
+        results = self.sp.current_user_top_tracks(limit=20)
+        
+        if results:
+            screen.ids.fetchingtrackstext.text = "Your top tracks are.."
+            
+            for track in results['items']:
+                track_card = UserDetailsTrackCard()
+                track_card.ids.user_details_tracks.markup = True
+                url = track['external_urls']['spotify']
+                
+                track_card.ids.user_details_tracks.text = f"[color=#0C1843]{track['name']}[/color] by {track['artists'][0]['name']}"
+                track_card.ids.view_button.bind(on_release=partial(self.open_spotify, url))
+                
+                screen.ids.tracks_container.add_widget(track_card)
+        else:
+            print("User has no top tracks")
 
+
+    def viewArtistsFollowed(self):  
+        self.resetScreen2()
+        
+        screen = self.sm.get_screen("screen2")
+        try:
+            results = self.sp.current_user_followed_artists()
+
+            if results:
+                screen.ids.artistsfollowed.text = "Your currently followed artists are.."
+                
+                for artist in results['artists']['items']:
+                    track_card = artistsFollowedTrackCard()
+                    track_card.ids.artistsfollowedtext.markup = True
+                    track_card.ids.artistsfollowedtext.text = f"{artist['name']}"
+                    
+                    screen.ids.tracks2_container.add_widget(track_card)   
+            else:
+                print("User follows no artists.")
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+
+
+    def viewRecentlyPlayed(self):
+        self.resetScreen2()
+        screen = self.sm.get_screen("screen2")
+        
+        try:
+            screen.ids.recentlyplayed.text = "Your recently played track is.."
+            result = self.sp.current_user_recently_played(limit=1)
+
+            if result['items']:
+                track_card = recentlyPlayedTrackCard()
+                track_card.ids.recentlyplayedTrackText.markup = True
+                
+                tracks = result['items'][0]['track']
+                track_card.ids.recentlyplayedTrackText.text = f"[color=#0C1843]{tracks['name']}[/color] by {tracks['artists'][0]['name']}"
+            
+                screen.ids.tracks3_container.add_widget(track_card)
+            else:
+                print("No recent tracks played")
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+
+
+    def usersTopArtists(self):
+        self.resetScreen2()
+        screen = self.sm.get_screen("screen2")
+        
+        try:
+            screen.ids.topartists.text = "Fetching your top artists..."
+            result = self.sp.current_user_top_artists()
+
+            for artist in result['items']:
+                track_card = artistsFollowedTrackCard()
+                track_card.ids.topartiststrack.text = f"{artist['name']}"
+        
+                screen.ids.tracks4_container.add_widget(track_card)
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+
+
+    def viewCurrentPlaylists(self):
+        self.resetScreen2()
+        screen = self.sm.get_screen("screen2")
+        
+        try:
+            screen.ids.currentplaylists.text = "Your current playlists are.."
+            result = self.sp.current_user_playlists()
+
+            for playlist in result['items']:
+                track_card = artistsFollowedTrackCard()  
+                track_card.ids.curr_playliststext.text = f"{playlist['name']}"
+
+                screen.ids.tracks5_container.add_widget(track_card)
+        
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+    
+    
+    def viewSavedAlbums(self):
+        self.resetScreen2()
+        screen = self.sm.get_screen("screen2")
+        
+        try:
+            screen.ids.liked_albums.text = "Your Liked albums are.."
+            result = self.sp.current_user_saved_albums()
+
+            albums = result['items']
+
+            for album in albums:
+                track_card = artistsFollowedTrackCard()  
+                track_card.ids.liked_albumstext.text = f"{album['album']['name']}"
+                
+                if len(albums) == 1:
+                    screen.ids.tracks6part_container.add_widget(track_card)
+                else:
+                    screen.ids.tracks6_container.add_widget(track_card)
+                
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+    
+    
+    def viewSavedTracks(self):
+        self.resetScreen2()
+        screen = self.sm.get_screen("screen2")
+        
+        try:
+            screen.ids.liked_tracks.text = "Your Liked tracks are.."
+            result = self.sp.current_user_saved_tracks()
+
+            if result:
+                for track in result['items']:
+                    track_card = artistsFollowedTrackCard() 
+                    track_card.ids.liked_trackstext.markup = True 
+                    track_card.ids.liked_trackstext.text = f"[color=#0C1843]{track['track']['name']}[/color] by {track['track']['artists'][0]['name']}"
+            
+                    if len(track) == 1:
+                        screen.ids.tracks6part_container.add_widget(track_card)
+                    else:
+                        screen.ids.tracks7_container.add_widget(track_card)
+            else:
+                print("You havent liked any tracks yet!.")
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+
+
+    def viewCurrentlyPlaying(self):
+        self.resetScreen2()
+        screen = self.sm.get_screen("screen2")
+        
+        try:
+            screen.ids.currently_playing_track.text = "Your currently playing track is.."
+            current_playing = self.sp.currently_playing()
+            
+            track_card = recentlyPlayedTrackCard()
+            track_card.ids.current_playing_trackstext.markup = True
+
+            if current_playing and current_playing['is_playing']:
+                track_card.ids.current_playing_trackstext.text = f"[color=#0C1843]{current_playing['item']['name']}[/color] by {current_playing['item']['artists'][0]['name']}"
+                screen.ids.tracks8_container.add_widget(track_card)
+            else:
+                screen.ids.notrackplaying.markup = True
+                screen.ids.notrackplaying.text = f"[color=#0C1843]You aren't listening to any tracks yet![/color]"
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+    
 class Login:
     def __init__(self, client_id, client_secret):
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -270,6 +477,7 @@ class Login:
         else:
             raise ValueError(f"\033[31mError: No token has been fetched. Please Login...\033[0m")
 
+
 class Dashboard(Screen):
     pass
 class Screen1(Screen):
@@ -279,6 +487,12 @@ class Screen2(Screen):
 class Screen3(Screen):
     pass
 class TrackCard(BoxLayout):
+    pass
+class UserDetailsTrackCard(BoxLayout):
+    pass
+class artistsFollowedTrackCard(BoxLayout):
+    pass
+class recentlyPlayedTrackCard(BoxLayout):
     pass
 
 class WindowManager(ScreenManager):
