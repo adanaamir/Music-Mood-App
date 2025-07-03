@@ -68,6 +68,17 @@ class MainApp(MDApp):
 
         self.sm = self.load_ui()
         Window.bind(on_key_down=self.on_key_down)
+        
+        #--------------------------------USER NAME----------------------
+        screen1 = self.sm.get_screen("screen1")
+        screen2 = self.sm.get_screen("screen2")
+        
+        user_data = self.sp.current_user()
+        display_name = user_data['display_name']
+        
+        screen1.ids.username1.text = f"{display_name}"
+        screen2.ids.username2.text = f"{display_name}"
+
         return self.sm
 
     def load_ui(self):
@@ -124,7 +135,7 @@ class MainApp(MDApp):
         while not redirect_response_url:
             time.sleep(1)
 
-        #------SETTING THE REDIRECT RESPONSE HERE-------
+        #---------------------------SETTING THE REDIRECT RESPONSE HERE-----------------------------
         self.login.redirect_response = redirect_response_url
         try:
             token = self.login.fetchingAccessToken()
@@ -278,6 +289,8 @@ class MainApp(MDApp):
         screen.ids.tracks6part_container.clear_widgets()
         screen.ids.tracks7_container.clear_widgets()
         screen.ids.tracks8_container.clear_widgets()
+        
+    #--------------------------------------------------USER DETAILS---------------------------------------
     
     
     def viewTopTracks(self):
