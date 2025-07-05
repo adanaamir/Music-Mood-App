@@ -45,6 +45,7 @@ def start_server():
 
 #---------------------------------------------kivy app------------------------------------------------------
 class MainApp(MDApp):
+
     def build(self):
         load_dotenv()
         start_server()
@@ -55,29 +56,37 @@ class MainApp(MDApp):
         self.login.authenticate_user()
         self.redirect_url = "http://localhost:8080/callback"
         self.scope = (
-                "user-top-read "
-                "user-follow-read "
-                "playlist-read-private "
-                "user-read-recently-played "
-                "user-library-read "
-                "user-read-playback-state"
-                )
-        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_url, scope=self.scope),
+            "user-top-read "
+            "user-follow-read "
+            "playlist-read-private "
+            "user-read-recently-played "
+            "user-library-read "
+            "user-read-playback-state"
+        )
+
+        self.sp = spotipy.Spotify(
+            auth_manager=SpotifyOAuth(
+                client_id=self.client_id,
+                client_secret=self.client_secret,
+                redirect_uri=self.redirect_url,
+                scope=self.scope
+            ),
             requests_timeout=10, retries=5, status_retries=5, backoff_factor=0.5
         )
 
         self.sm = self.load_ui()
         Window.bind(on_key_down=self.on_key_down)
-        
-        #--------------------------------USER NAME----------------------
+
+    # ------------------ SCREEN SWITCHING ----------------------
+
+        user_data = self.sp.current_user()
+        self.display_name = user_data['display_name']
+
         screen1 = self.sm.get_screen("screen1")
         screen2 = self.sm.get_screen("screen2")
-        
-        user_data = self.sp.current_user()
-        display_name = user_data['display_name']
-        
-        screen1.ids.username1.text = f"{display_name}"
-        screen2.ids.username2.text = f"{display_name}"
+
+        screen1.ids.username1.text = self.display_name
+        screen2.ids.username2.text = self.display_name
 
         return self.sm
 
