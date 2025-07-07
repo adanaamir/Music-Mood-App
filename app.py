@@ -45,7 +45,6 @@ def start_server():
 
 #---------------------------------------------kivy app------------------------------------------------------
 class MainApp(MDApp):
-
     def build(self):
         load_dotenv()
         start_server()
@@ -95,15 +94,17 @@ class MainApp(MDApp):
         return Builder.load_file("frontend.kv") 
     
     def scroll_artist_right(self):
+        print("Right scroll button pressed")
         scroll = self.root.get_screen('screen1').ids.artist_scroll
         new_x = min(scroll.scroll_x + 0.2, 1.01)
         Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll)  #scrolls right by 20%
 
     def scroll_artist_left(self):
+        print("Left scroll button pressed") 
         scroll = self.root.get_screen('screen1').ids.artist_scroll
         if scroll.scroll_x <= 0.01:
             return
-        new_x = min(scroll.scroll_x - 0.2, 0)
+        new_x = max(scroll.scroll_x - 0.2, 0)
         Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll) 
 
 

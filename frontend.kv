@@ -391,8 +391,8 @@ WindowManager:
     name: 'screen1'
 
     ScrollView:
-        do_scroll_x: False
         do_scroll_y: True
+        do_scroll_x: False
         bar_width: 5
 
         BoxLayout:
@@ -402,7 +402,7 @@ WindowManager:
 
             RelativeLayout:
                 size_hint_y: None
-                height: dp(700)
+                height: dp(1300)
 
                 canvas.before:
                     Color:
@@ -416,22 +416,23 @@ WindowManager:
                     allow_stretch: True
                     keep_ratio: False
                     size: 2966, 1153
-                    size_hint: None,None
-                    pos_hint: {'x':0, 'y': -0.7}
+                    size_hint: None, None
+                    pos_hint: {'x': 0, 'y': 0.5}
 
                 ScrollView:
                     id: artist_scroll
                     size_hint: None, None
-                    size: dp(1450), dp(260) 
-                    pos_hint: {'center_x': 0.5, 'top': 0.54}
+                    size: dp(1450), dp(260)
+                    pos_hint: {'x': 0, 'top': 0.71}
                     do_scroll_x: True
                     do_scroll_y: False
                     bar_width: 0
 
                     BoxLayout:
+                        id: artist_box
                         size_hint_x: None
-                        width: 4082
                         height: dp(260)
+                        width: self.minimum_width 
                         orientation: 'horizontal'
 
                         Image:
@@ -439,32 +440,39 @@ WindowManager:
                             source: 'images/artist_strip.png'
                             allow_stretch: True
                             keep_ratio: True
-                            size_hint: None,None
-                            size: 4082,243
+                            size_hint: None, None
+                            size: 4900, 270
+
+                        Widget:
+                            size_hint_x: None
+                            width: dp(145)
 
                 Image:
                     source: 'images/forward.png'
                     allow_stretch: True
                     keep_ratio: False
-                    size_hint: None,None
+                    size_hint: None, None
                     size: 119, 465
-                    pos_hint: {'x':0.96, 'y': 0.1}
+                    pos_hint: {'x': 0.96, 'y': 0.5}
+                    disabled: True
 
                 Image:
                     source: 'images/forward.png'
                     allow_stretch: True
                     keep_ratio: False
-                    size_hint: None,None
+                    size_hint: None, None
                     size: 119, 465
-                    pos_hint: {'x':-0.02, 'y': 0.1}
+                    pos_hint: {'x': -0.02, 'y': 0.5}
+                    disabled: True
 
                 BasicButtonHover:
                     id: artist_scroll_r
                     text: '>'
                     font_size: 50
                     size_hint: None, None
-                    pos_hint: {'x': 0.956, 'y': 0.27}
-                    background_color: 1, 0, 0, 0.5
+                    size: dp(50), dp(50)
+                    pos_hint: {'x': 0.956, 'y': 0.57}
+                    background_color: 1, 0, 0, 0
                     background_normal: ''
                     color: 0, 0, 0, 1
                     on_release: app.scroll_artist_right()
@@ -474,21 +482,20 @@ WindowManager:
                     text: '<'
                     font_size: 50
                     size_hint: None, None
-                    pos_hint: {'x': 0.000001, 'y': 0.27}
-                    background_color: 1, 0, 0, 0.5
+                    size: dp(50), dp(50)
+                    pos_hint: {'x': 0.001, 'y': 0.57}
+                    background_color: 1, 0, 0, 0
                     background_normal: ''
                     color: 0, 0, 0, 1
                     on_release: app.scroll_artist_left()
 
-                Widget:
+                Image:
+                    source: 'images/halfBox.png'
                     size_hint: None, None
-                    size: 1463, 600
-                    pos_hint: {'x': 0, 'y': 0.58}
-                    canvas.before:
-                        Rectangle:
-                            source: 'images/halfBox.png'
-                            pos: self.pos
-                            size: self.size
+                    allow_stretch: True
+                    keep_ratio: True
+                    size: 2966, 1153
+                    pos_hint: {'x': 0, 'y': 0.67}
 
                 Image:
                     source: 'images/border.png'
@@ -496,7 +503,7 @@ WindowManager:
                     keep_ratio: False
                     size: 2010, 56
                     size_hint: None,None
-                    pos_hint: {'x':0, 'y': 0.527}
+                    pos_hint: {'x':0, 'y': 0.71}
 
                 Image:
                     source: 'images/Group 36.png'
@@ -504,7 +511,7 @@ WindowManager:
                     keep_ratio: False
                     size: 1600, 56
                     size_hint: None,None
-                    pos_hint: {'x':0.04, 'y': 0.91}
+                    pos_hint: {'x':0.04, 'y': 0.945}
 
                 Label:
                     id: username1
@@ -513,14 +520,14 @@ WindowManager:
                     font_size: 40
                     size_hint: None, None
                     size: self.texture_size
-                    pos_hint: {"x": 0.8, "y": 0.95} 
+                    pos_hint: {"x": 0.8, "y": 0.945} 
                     color: 0, 0, 0, 1
 
                 BasicButtonHover:
                     text: 'Home'
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 25
-                    pos_hint: {'x': 0.35, 'y': 0.92}
+                    pos_hint: {'x': 0.35, 'y': 0.95}
                     size_hint: None, None
                     size: self.texture_size
                     background_color: 0, 0, 0, 0
@@ -532,7 +539,7 @@ WindowManager:
                     text: 'Logout'
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 25
-                    pos_hint: {'x': 0.5, 'y': 0.92} 
+                    pos_hint: {'x': 0.5, 'y': 0.95} 
                     size_hint: None, None
                     background_color: 0, 0, 0, 0
                     background_normal: ""
@@ -546,7 +553,7 @@ WindowManager:
                     allow_stretch: False
                     keep_ratio: False
                     size_hint: 0.7,0.7
-                    pos_hint: {'x':-0.015, 'y': 0.589}
+                    pos_hint: {'x':-0.015, 'y': 0.609}
                     color: 0,0,0, 1
 
                 Image:
@@ -554,7 +561,7 @@ WindowManager:
                     allow_stretch: False
                     keep_ratio: False
                     size_hint: 0.7,0.7
-                    pos_hint: {'x':0.135, 'y': 0.589}
+                    pos_hint: {'x':0.135, 'y': 0.609}
                     color: 0,0,0, 1
 
                 Label:
@@ -563,7 +570,7 @@ WindowManager:
                     font_name: "fonts/static/Inter_24pt-Bold.ttf"
                     font_size: 48
                     x: 80
-                    y: 650
+                    y: 1540
                     size_hint: None, None
                     size: self.texture_size
                     color: 1, 1, 1, 1
@@ -574,7 +581,7 @@ WindowManager:
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 27
                     x: 80
-                    y: 490
+                    y: 1330
                     size_hint: None, None
                     size: self.texture_size
                     color: 0, 0, 0, 1
@@ -585,7 +592,7 @@ WindowManager:
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 24
                     x: 80
-                    y: 420
+                    y: 1260
                     size_hint: None, None
                     size: self.texture_size
                     color: 0, 0, 0, 1
@@ -596,7 +603,7 @@ WindowManager:
                     text: ""
                     font_size: 25
                     x: 20
-                    y: -20
+                    y: 370
                     color: 0.408, 0.235, 0.235, 1
                 
                 mainoptions:
@@ -604,7 +611,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 580
-                    y: 830
+                    y: 1720
                     mood_name: "Happy"
                     on_release: app.enterMood(self.mood_name)
 
@@ -613,7 +620,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 880
-                    y: 830
+                    y: 1720
                     mood_name: "Sad"
                     on_release: app.enterMood(self.mood_name)
 
@@ -622,7 +629,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 1190
-                    y: 830
+                    y: 1720
                     mood_name: "Chill"
                     on_release: app.enterMood(self.mood_name)
 
@@ -631,7 +638,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 520
-                    y: 740
+                    y: 1620
                     mood_name: "Peaceful"
                     on_release: app.enterMood(self.mood_name)
 
@@ -640,7 +647,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 820
-                    y: 740
+                    y: 1620
                     mood_name: "Energetic"
                     on_release: app.enterMood(self.mood_name)
 
@@ -649,7 +656,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 1120
-                    y: 740
+                    y: 1620
                     mood_name: "Focused"
                     on_release: app.enterMood(self.mood_name)
 
@@ -658,7 +665,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 650
-                    y: 645
+                    y: 1520
                     mood_name: "Angry"
                     on_release: app.enterMood(self.mood_name)
 
@@ -667,7 +674,7 @@ WindowManager:
                     size_hint: None,None
                     size: 225, 42
                     x: 950
-                    y: 645
+                    y: 1520
                     mood_name: "Motivational"
                     on_release: app.enterMood(self.mood_name)
 
@@ -675,24 +682,23 @@ WindowManager:
                     source: 'images/Group 27.png'
                     size_hint: None,None
                     size: 150, 50
-                    pos_hint: {'x':0.9, 'y': 0.91}
+                    pos_hint: {'x':0.9, 'y': 0.945}
                     on_release: app.root.current = 'dashboard'
 
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint_y: None
-                height: self.minimum_height
-                padding: [0, -350, 0, 0]
+            FloatLayout:
+                size_hint: None, None
+                size: dp(1600), dp(-520)  # You can adjust width as needed
+                pos_hint: {'x': 0, 'y': 0.99}  # <-- Move up by increasing 'y' (0.25 means 25% height from bottom)
 
-            GridLayout:
-                id: tracks_container
-                cols: 4
-                spacing: 60
-                padding: [100, 100, 0, 150]
-                size_hint_y: None
-                row_default_height: 60
-                row_force_default: True
-                height: self.minimum_height
+                GridLayout:
+                    id: tracks_container
+                    cols: 4
+                    spacing: 60
+                    padding: [100, 100, 0, 0]
+                    size_hint_y: None
+                    row_default_height: 60
+                    row_force_default: True
+                    height: self.minimum_height
 
 <UserDetailsTrackCard>:
     size_hint: None, None
@@ -1027,7 +1033,7 @@ WindowManager:
                     font_size: 40
                     size_hint: None, None
                     size: self.texture_size
-                    pos_hint: {"x": 0.8, "y": 0.968}
+                    pos_hint: {"x": 0.8, "y": 0.967}
                     color: 0, 0, 0, 1
 
                 BasicButtonHover:
@@ -1152,7 +1158,7 @@ WindowManager:
                     source: 'images/blue back.png'
                     size_hint: None,None
                     size: 150, 50
-                    pos_hint: {'x':0.78, 'y': 0.93}
+                    pos_hint: {'x':0.9, 'y': 0.969}
                     on_release: app.root.current = 'dashboard'
 
                 #--------------------------------- VIEW BUTTONS --------------------------------------
