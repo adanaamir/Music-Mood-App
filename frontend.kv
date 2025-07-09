@@ -70,12 +70,12 @@ WindowManager:
                 Color:
                     rgba: 0, 0, 0, 0.2
                 RoundedRectangle:
-                    pos: 152 + 2, -283 - 2
+                    pos: 152 + 2, -323 - 2
                     size: 220, 60
                     radius: [18]
 
             Label:
-                markup: True     #for enablng colors for specific post
+                markup: True 
                 text: "[color=#6F2A2A]SPOTIFY[/color]  APP\nRECOMMENDATION"
                 font_name: "fonts/static/Inter_24pt-ExtraBold.ttf"
                 font_size: "33sp"
@@ -107,6 +107,8 @@ WindowManager:
                 color: 0,0,0,1
                 background_color: 0, 0, 0, 0
                 background_normal: ''
+                on_release:
+                    app.root.current = "Mainwindow"
 
             BasicButtonHover:
                 text: "About us"
@@ -119,6 +121,7 @@ WindowManager:
                 color: 0,0,0,1
                 background_color: 0, 0, 0, 0
                 background_normal: ''
+                on_release: app.show_about_us()
 
             BasicButtonHover:
                 text: "Contact"
@@ -131,6 +134,7 @@ WindowManager:
                 color: 0,0,0,1
                 background_color: 0, 0, 0, 0
                 background_normal: ''
+                on_release: app.show_contact()
 
             TextInput:
                 id: redirect_input
@@ -148,6 +152,24 @@ WindowManager:
                 background_normal: ''
                 background_active: ''
                 padding: [10, 10, 10, 10]
+
+            Label:
+                text: "Heads up! This link works only once, so make sure to paste it here right after logging in."
+                font_name: "tracksfont/Inter/static/Inter_18pt-Italic.ttf"
+                font_size: 17
+                size_hint: None, None
+                size: self.texture_size
+                x: 180
+                y: -235
+                color: 0, 0, 0, 1
+
+            Image:
+                source: 'images/info.png'
+                allow_stretch: True
+                keep_ratio: False
+                size_hint: None, None
+                size: 19,19
+                pos_hint: {'x':1.5, 'y': -2.33}
 
             HoverButton:
                 text: "LOGIN"
@@ -176,7 +198,7 @@ WindowManager:
                 size_hint: None, None
                 font_size: 21
                 x: 150
-                y: -280
+                y: -320
                 size: 220, 60
                 background_color: 0, 0, 0, 0
                 background_normal: ''
@@ -303,13 +325,24 @@ WindowManager:
                         color: 0, 0, 0, 1
 
                     Label:
-                        text: "Hello, Adan"
+                        text: "Hello,"
                         font_name: "fonts/static/Inter_24pt-Medium.ttf"
                         font_size: 32
                         x: 220
                         y: 380
                         size_hint: None, None
                         size: self.texture_size
+                        color: 0, 0, 0, 1
+
+                    Label:
+                        id: username3
+                        text: ""
+                        font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                        font_size: 32
+                        size_hint: None, None
+                        size: self.texture_size
+                        x: 310
+                        y: 380
                         color: 0, 0, 0, 1
 
                     Label:
@@ -539,14 +572,13 @@ WindowManager:
                     text: 'Logout'
                     font_name: "fonts/static/Inter_24pt-Medium.ttf"
                     font_size: 25
-                    pos_hint: {'x': 0.5, 'y': 0.95} 
+                    pos_hint: {'x': 0.5, 'y': 0.7} 
                     size_hint: None, None
                     background_color: 0, 0, 0, 0
                     background_normal: ""
                     size: self.texture_size
                     color: 0, 0, 0, 1
-                    on_release:
-                        app.root.current = 'Mainwindow'
+                    # on_release: app.logout()
 
                 Image:
                     source: 'images/house-blank.png'
@@ -687,8 +719,8 @@ WindowManager:
 
             FloatLayout:
                 size_hint: None, None
-                size: dp(1600), dp(-520)  # You can adjust width as needed
-                pos_hint: {'x': 0, 'y': 0.99}  # <-- Move up by increasing 'y' (0.25 means 25% height from bottom)
+                size: dp(1600), dp(-520) 
+                pos_hint: {'x': 0, 'y': 0.99} 
 
                 GridLayout:
                     id: tracks_container

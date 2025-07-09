@@ -1,11 +1,8 @@
 from dotenv import load_dotenv
 from flask import Flask, request
 from kivymd.app import MDApp
-from kivy.app import App
 from kivy.lang import Builder
-from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty
 from kivy.uix.button import Button
 from kivy.animation import Animation
@@ -24,6 +21,9 @@ from kivy.factory import Factory
 from hoverbehaviour import HoverBehavior
 import webbrowser, os, threading, time, random, requests, spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+from kivymd.toast import toast
 
 #-----------------------------------flask for redirecting------------------------------------------------
 app = Flask(__name__)
@@ -45,14 +45,17 @@ def start_server():
 
 #---------------------------------------------kivy app------------------------------------------------------
 class MainApp(MDApp):
+    about_dialog = None
+    contact_dialog = None
+    
     def build(self):
         load_dotenv()
         start_server()
 
         self.client_id = os.getenv("CLIENT_ID")
         self.client_secret = os.getenv("CLIENT_SECRET")
-        self.login = Login(client_id=self.client_id, client_secret=self.client_secret)
-        self.login.authenticate_user()
+        # self.login = Login(client_id=self.client_id, client_secret=self.client_secret)
+        # self.login.authenticate_user()
         self.redirect_url = "http://localhost:8080/callback"
         self.scope = (
             "user-top-read "
@@ -62,6 +65,17 @@ class MainApp(MDApp):
             "user-library-read "
             "user-read-playback-state"
         )
+        
+        self.login = Login(client_id=self.client_id, client_secret=self.client_secret)
+        
+        self.sm = self.load_ui()
+        Window.bind(on_key_down=self.on_key_down)
+        return self.sm
+
+    # ------------------ SCREEN SWITCHING ----------------------
+
+    def login_user(self):
+        self.login.authenticate_user()
 
         self.sp = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
@@ -73,61 +87,88 @@ class MainApp(MDApp):
             requests_timeout=10, retries=5, status_retries=5, backoff_factor=0.5
         )
 
-        self.sm = self.load_ui()
-        Window.bind(on_key_down=self.on_key_down)
-
-    # ------------------ SCREEN SWITCHING ----------------------
-
         user_data = self.sp.current_user()
         self.display_name = user_data['display_name']
 
         screen1 = self.sm.get_screen("screen1")
         screen2 = self.sm.get_screen("screen2")
+        dashboard = self.sm.get_screen("dashboard")
 
         screen1.ids.username1.text = self.display_name
         screen2.ids.username2.text = self.display_name
+        dashboard.ids.username3.text = self.display_name
 
-        return self.sm
+        self.sm.current = "screen1"
+    
+    #------------------POP UP BOX FOR ABOUT US AND CONTACT US---------------
+    def show_about_us(self):
+        if not self.about_dialog:
+            self.about_dialog = MDDialog(
+            title="About This Project",
+            text="This is a personal project built using Spotify's API for mood-based song recommendations.\nMade for learning purposes",
+            buttons=[
+                MDFlatButton(
+                    text="Close",
+                    on_release=self.close_about,
+                )
+            ],
+        )
+        self.about_dialog.open()
+        
+    def show_contact(self):
+        if not self.contact_dialog:
+            self.contact_dialog = MDDialog(
+            title="Contact",
+            text="This is a student project. No official support — Though you can check out: \nGithub: https://github.com/adanaamir\nLinkedin: https://www.linkedin.com/in/adan-aamir",
+            buttons=[
+                MDFlatButton(
+                    text="Close",
+                    on_release=self.close_contact,
+                )
+            ],
+        )
+        self.contact_dialog.open()
+        
+    def close_about(self, *args):
+        self.about_dialog.dismiss()
+        self.about_dialog = None
+
+    def close_contact(self, *args):
+        self.contact_dialog.dismiss()
+        self.contact_dialog = None
 
     def load_ui(self):
         Builder.unload_file("frontend.kv")
         return Builder.load_file("frontend.kv") 
     
     def scroll_artist_right(self):
-        print("Right scroll button pressed")
         scroll = self.root.get_screen('screen1').ids.artist_scroll
         new_x = min(scroll.scroll_x + 0.2, 1.01)
-        Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll)  #scrolls right by 20%
+        Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll) 
 
     def scroll_artist_left(self):
-        print("Left scroll button pressed") 
         scroll = self.root.get_screen('screen1').ids.artist_scroll
         if scroll.scroll_x <= 0.01:
             return
         new_x = max(scroll.scroll_x - 0.2, 0)
         Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll) 
 
-
     #---------------------auto reload current screen------------------------
     def on_key_down(self, window, key, scancode, codepoint, modifier):
         if codepoint == 'r':
             print("🔁 Reloading KV file...")
 
-            # Step 1: Save current screen name
             current_screen = self.sm.current
 
-            # Step 2: Reload the .kv file
             Builder.unload_file("frontend.kv")
             new_ui = Builder.load_file("frontend.kv")
 
-            # Step 3: Clear and add fresh screens
             self.sm.clear_widgets()
             for screen in new_ui.screens:
                 screen_class = Factory.get(screen.__class__.__name__)
                 new_screen = screen_class(name=screen.name)
                 self.sm.add_widget(new_screen)
 
-            # Step 4: Go back to the screen we were on
             self.sm.current = current_screen
 
             print(f"✅ Reloaded and stayed on '{current_screen}'")
@@ -135,6 +176,8 @@ class MainApp(MDApp):
     #---------------------------continue-------------------------------------
     def spotify_login(self):
         self.background_color = [1, 0, 0.498, 1]
+        
+        self.login.authenticate_user()
         if self.login.auth_url:
             webbrowser.open(self.login.auth_url)
         else:
@@ -301,8 +344,6 @@ class MainApp(MDApp):
         screen.ids.tracks8_container.clear_widgets()
         
     #--------------------------------------------------USER DETAILS---------------------------------------
-    
-    
     def viewTopTracks(self):
         self.resetScreen2()
         
