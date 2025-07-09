@@ -8,7 +8,7 @@ from kivy.uix.button import Button
 from kivy.animation import Animation
 from functools import partial
 from kivy.uix.image import Image
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
@@ -24,6 +24,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivymd.toast import toast
+from kivy.graphics import PushMatrix, PopMatrix, Scale
 
 #-----------------------------------flask for redirecting------------------------------------------------
 app = Flask(__name__)
@@ -54,8 +55,6 @@ class MainApp(MDApp):
 
         self.client_id = os.getenv("CLIENT_ID")
         self.client_secret = os.getenv("CLIENT_SECRET")
-        # self.login = Login(client_id=self.client_id, client_secret=self.client_secret)
-        # self.login.authenticate_user()
         self.redirect_url = "http://localhost:8080/callback"
         self.scope = (
             "user-top-read "
@@ -70,13 +69,12 @@ class MainApp(MDApp):
         
         self.sm = self.load_ui()
         Window.bind(on_key_down=self.on_key_down)
+        
         return self.sm
 
     # ------------------ SCREEN SWITCHING ----------------------
 
     def login_user(self):
-        self.login.authenticate_user()
-
         self.sp = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
                 client_id=self.client_id,
@@ -151,7 +149,7 @@ class MainApp(MDApp):
         if scroll.scroll_x <= 0.01:
             return
         new_x = max(scroll.scroll_x - 0.2, 0)
-        Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll) 
+        Animation(scroll_x=new_x, d=0.3, t= 'out_quad').start(scroll)     
 
     #---------------------auto reload current screen------------------------
     def on_key_down(self, window, key, scancode, codepoint, modifier):
@@ -610,14 +608,12 @@ class mainoptions(HoverBehavior, ButtonBehavior, Image):
         if self.original_y is None:
             self.original_y = self.y
 
-        #animating "bop" 
         Animation.cancel_all(self) 
         Animation(y=self.original_y + 10, duration=0.15).start(self)
 
     def on_leave(self):
         Window.set_system_cursor("arrow")
 
-        #animating back to original position
         Animation.cancel_all(self)
         Animation(y=self.original_y, duration=0.15).start(self)
 
@@ -635,5 +631,39 @@ class BasicButtonHover(Button, HoverBehavior):
     def on_leave(self):
         Window.set_system_cursor("arrow")
         
+class EnlargeHover(HoverBehavior, ButtonBehavior, Image):
+    mood_name = StringProperty("")
+    scale = NumericProperty(1.0)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._scale_transform = Scale(1.0, 1.0, 1.0)
+        with self.canvas.before:
+            PushMatrix()
+            self._scale_transform = Scale(1.0, 1.0, 1.0, origin=self.center)
+        with self.canvas.after:
+            PopMatrix()
+
+        self.bind(pos=self._update_origin, size=self._update_origin)
+        self.bind(scale=self._apply_scale)
+        Clock.schedule_once(self._update_origin, 0)
+
+    def _update_origin(self, *args):
+        self._scale_transform.origin = self.center
+
+    def _apply_scale(self, instance, value):
+        self._scale_transform.x = value
+        self._scale_transform.y = value
+
+    def on_enter(self):
+        Window.set_system_cursor("hand")
+        Animation.cancel_all(self)
+        Animation(scale=1.1, duration=0.2, t='out_quad').start(self)
+
+    def on_leave(self):
+        Window.set_system_cursor("arrow")
+        Animation.cancel_all(self)
+        Animation(scale=1.0, duration=0.2, t='out_quad').start(self)
+
 
 MainApp().run()

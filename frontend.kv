@@ -578,7 +578,7 @@ WindowManager:
                     background_normal: ""
                     size: self.texture_size
                     color: 0, 0, 0, 1
-                    # on_release: app.logout()
+                    on_release: app.root.current = 'Mainwindow'
 
                 Image:
                     source: 'images/house-blank.png'
@@ -1381,18 +1381,99 @@ WindowManager:
     FloatLayout:
         canvas.before:
             Color:
-                rgba: 0.97, 0.945, 0.89, 1
+                rgba: 1.0, 0.9686, 0.9020, 1
             Rectangle: 
                 pos: self.pos
                 size: self.size
 
-        HoverButton:
-            text: "BACK"
-            font_name: "fonts/static/Inter_18pt-Bold.ttf"
+        Image:
+            source: 'images/border 3.png'
             size_hint: None, None
-            font_size: 19
-            x: 80
-            y: 7
-            size: 220, 60
-            background_color: 0.529, 0.012, 0.361, 1
+            allow_stretch: True
+            keep_ratio: True
+            size: 2000, 640
+            pos_hint: {'x': 0, 'y': -0.2}
+
+        Image:
+            source: 'images/dash.png'
+            allow_stretch: True
+            keep_ratio: False
+            size: 1600, 56
+            size_hint: None,None
+            pos_hint: {'x':0.04, 'y': 0.9}
+
+        BasicButtonHover:
+            text: 'Home'
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 25
+            pos_hint: {'x': 0.35, 'y': 0.91}
+            size_hint: None, None
+            size: self.texture_size
+            background_color: 0, 0, 0, 0
+            background_normal: ''
+            color: 0, 0, 0, 1
+            on_release: app.root.current = 'Mainwindow'
+
+        BasicButtonHover:
+            text: 'Logout'
+            font_name: "fonts/static/Inter_24pt-Medium.ttf"
+            font_size: 25
+            pos_hint: {'x': 0.5, 'y': 0.91} 
+            size_hint: None, None
+            background_color: 0, 0, 0, 0
+            background_normal: ""
+            size: self.texture_size
+            color: 0, 0, 0, 1
+            on_release:
+                app.root.current = 'Mainwindow'
+
+        Image:
+            source: 'images/house-blank.png'
+            allow_stretch: False
+            keep_ratio: False
+            size_hint: 0.7,0.7
+            pos_hint: {'x':-0.015, 'y': 0.58}
+            color: 0,0,0, 1
+
+        Image:
+            source: 'images/user-logout.png'
+            allow_stretch: False
+            keep_ratio: False
+            size_hint: 0.7,0.7
+            pos_hint: {'x':0.135, 'y': 0.58}
+            color: 0,0,0, 1
+
+        BasicImageHover:
+            source: 'images/back 3.png'
+            size_hint: None,None
+            size: 150, 50
+            pos_hint: {'x':0.9, 'y': 0.9}
             on_release: app.root.current = 'dashboard'
+
+        EnlargeHover:
+            source: 'images/playlist card.png'
+            size_hint: None,None
+            size: 234, 246
+            pos_hint: {'x':0.5, 'y': 0.5}
+            # on_release: app.root.current = 'dashboard'
+
+        Image:
+            source: 'images/circle 3.png'
+            allow_stretch: True
+            keep_ratio: False
+            size: 455, 450
+            size_hint: None,None
+            pos_hint: {'x':0.05, 'y': 0.28}
+
+        Label:
+            text: "Tap a playlist to get song recommendations based on its vibe."
+            font_name: "tracksfont/Noto_Sans/static/NotoSans-ExtraBold.ttf"
+            font_size: 33
+            x: 390
+            y: 780
+            size_hint: None, None
+            size: self.texture_size
+            color: 0.9216, 0.2941, 0.4667, 1
+
+        
+            
