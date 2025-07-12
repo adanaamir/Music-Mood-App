@@ -5,6 +5,7 @@ WindowManager:
     Screen1:
     Screen2:
     Screen3:
+    AIscreen:
 
 #------------------------------------SCREEN 1 MAIN PAGE --------------------------------------
 <MainScreen@Screen>:
@@ -275,14 +276,14 @@ WindowManager:
                     source: 'images/Group 7.png'
                     size_hint: None,None
                     size: 300, 400
-                    pos_hint: {'x':0.1, 'y': 0.2}
+                    pos_hint: {'x':0.16, 'y': 0.2}
                     on_release: app.root.current = 'screen1'
 
                 mainoptions:
                     source: 'images/Group 8.png'
                     size_hint: None,None
                     size: 300, 400
-                    pos_hint: {'x':0.35, 'y': 0.2}
+                    pos_hint: {'x':0.38, 'y': 0.2}
                     on_release: app.root.current = 'screen2'
 
                 mainoptions:
@@ -335,7 +336,7 @@ WindowManager:
                         color: 0, 0, 0, 1
 
                     Label:
-                        id: username3
+                        id: displayname_label
                         text: ""
                         font_name: "fonts/static/Inter_24pt-Medium.ttf"
                         font_size: 32
@@ -547,7 +548,7 @@ WindowManager:
                     pos_hint: {'x':0.04, 'y': 0.945}
 
                 Label:
-                    id: username1
+                    id: displayname_label
                     text: ""
                     font_name: "tracksfont/Italianno-Regular.ttf"
                     font_size: 40
@@ -1059,7 +1060,7 @@ WindowManager:
                     pos_hint: {'x':0, 'y': 0.81}
 
                 Label:
-                    id: username2
+                    id: displayname_label
                     text: ""
                     font_name: "tracksfont/Italianno-Regular.ttf"
                     font_size: 40
@@ -1194,7 +1195,7 @@ WindowManager:
                     on_release: app.root.current = 'dashboard'
 
                 #--------------------------------- VIEW BUTTONS --------------------------------------
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1205,7 +1206,7 @@ WindowManager:
                     background_down: 'images/view.png'
                     on_release: app.viewTopTracks()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1216,7 +1217,7 @@ WindowManager:
                     background_down: 'images/spotify1.png'
                     on_release: app.viewArtistsFollowed()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1227,7 +1228,7 @@ WindowManager:
                     background_down: 'images/spotify1.png'
                     on_release: app.viewRecentlyPlayed()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1238,7 +1239,7 @@ WindowManager:
                     background_down: 'images/spotify1.png'
                     on_release: app.usersTopArtists()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1249,7 +1250,7 @@ WindowManager:
                     background_down: 'images/spotify1.png'
                     on_release: app.viewCurrentPlaylists()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1260,7 +1261,7 @@ WindowManager:
                     background_down: 'images/spotify1.png'
                     on_release: app.viewSavedAlbums()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1271,7 +1272,7 @@ WindowManager:
                     background_down: 'images/spotify1.png'
                     on_release: app.viewSavedTracks()
 
-                mainoptions:
+                EnlargeHover:
                     source: 'images/view.png'
                     size_hint: None, None
                     allow_stretch: True
@@ -1374,6 +1375,52 @@ WindowManager:
                     x: -10
                     y: 180
                     color: 0, 0, 0, 1 
+
+<PlaylistsDisplayTrackCard@BoxLayout>:
+    size_hint: None, None
+    size: 270, 300
+    orientation: 'vertical'
+    spacing: 10
+    padding: [10, 10, 10, 10]
+
+    RelativeLayout: 
+        size: root.size
+
+        EnlargeHover:
+            source: "images/playlist card.png"  
+            size: self.parent.size
+            pos: self.parent.pos
+            allow_stretch: True
+            keep_ratio: False
+            on_release: app.root.current = 'aiscreen'
+
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 4
+                padding: [10, 10, 10, 140]
+                size_hint: None, None
+                size: self.parent.size
+                pos: self.parent.pos
+
+                Label:
+                    id: curr_playlists
+                    text: ""
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-ExtraBold.ttf"
+                    font_size: 25
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.9216, 0.2941, 0.4667, 1
+
+                Label:
+                    id: songcounttext
+                    text: ""
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-SemiBold.ttf"
+                    font_size: 24
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 1, 1, 1, 1
                     
 <Screen3>:
     name: 'screen3'
@@ -1448,14 +1495,7 @@ WindowManager:
             size_hint: None,None
             size: 150, 50
             pos_hint: {'x':0.9, 'y': 0.9}
-            on_release: app.root.current = 'dashboard'
-
-        EnlargeHover:
-            source: 'images/playlist card.png'
-            size_hint: None,None
-            size: 234, 246
-            pos_hint: {'x':0.5, 'y': 0.5}
-            # on_release: app.root.current = 'dashboard'
+            on_release: app.root.current = 'dashboard' 
 
         Image:
             source: 'images/circle 3.png'
@@ -1475,5 +1515,161 @@ WindowManager:
             size: self.texture_size
             color: 0.9216, 0.2941, 0.4667, 1
 
+        GridLayout:
+            id: tracks_container
+            cols: 3
+            spacing: -80
+            padding: [360, 20, 0, -50]
+            size_hint_y: None
+            row_default_height: 260
+            row_force_default: True
+            height: self.minimum_height
+
+        Label:
+            id: displayname_label
+            text: ""
+            font_name: "tracksfont/Italianno-Regular.ttf"
+            font_size: 40
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'x': 0.8, 'y': 0.9}
+            color: 0, 0, 0, 1
+
+
+<AIscreen>:
+    name: 'aiscreen'
+
+    ScrollView:
+        do_scroll_y: True
+        do_scroll_x: False
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
         
-            
+            FloatLayout:
+                size_hint_y: None
+                height: 2000 
+
+                canvas.before:
+                    Color:
+                        rgba: 1.0, 0.9686, 0.9020, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                Image:
+                    source: 'images/border 3rd.png'
+                    size_hint: None, None
+                    allow_stretch: True
+                    keep_ratio: True
+                    size: 2008, 1295
+                    pos_hint: {'x': 0, 'y': 0.07}
+
+                BasicImageHover:
+                    source: 'images/back 3.png'
+                    size_hint: None,None
+                    size: 150, 50
+                    pos_hint: {'x':0.9, 'y': 0.95}
+                    on_release: app.root.current = 'screen3' 
+
+                Image:
+                    source: 'images/dash.png'
+                    allow_stretch: True
+                    keep_ratio: False
+                    size: 1600, 56
+                    size_hint: None,None
+                    pos_hint: {'x':0.04, 'y': 0.95}
+
+                BasicButtonHover:
+                    text: 'Home'
+                    font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                    font_size: 25
+                    pos_hint: {'x': 0.35, 'y': 0.956}
+                    size_hint: None, None
+                    size: self.texture_size
+                    background_color: 0, 0, 0, 0
+                    background_normal: ''
+                    color: 0, 0, 0, 1
+                    on_release: app.root.current = 'Mainwindow'
+
+                BasicButtonHover:
+                    text: 'Logout'
+                    font_name: "fonts/static/Inter_24pt-Medium.ttf"
+                    font_size: 25
+                    pos_hint: {'x': 0.5, 'y': 0.956} 
+                    size_hint: None, None
+                    background_color: 0, 0, 0, 0
+                    background_normal: ""
+                    size: self.texture_size
+                    color: 0, 0, 0, 1
+                    on_release:
+                        app.root.current = 'Mainwindow'
+
+                Image:
+                    source: 'images/house-blank.png'
+                    allow_stretch: False
+                    keep_ratio: False
+                    size_hint: 0.7,0.7
+                    pos_hint: {'x':-0.015, 'y': 0.615}
+                    color: 0,0,0, 1
+
+                Image:
+                    source: 'images/user-logout.png'
+                    allow_stretch: False
+                    keep_ratio: False
+                    size_hint: 0.7,0.7
+                    pos_hint: {'x':0.135, 'y': 0.615}
+                    color: 0,0,0, 1
+
+                Label:
+                    id: displayname_label
+                    text: ""
+                    font_name: "tracksfont/Italianno-Regular.ttf"
+                    font_size: 40
+                    size_hint: None, None
+                    size: self.texture_size
+                    pos_hint: {'x': 0.8, 'y': 0.95}
+                    color: 0, 0, 0, 1
+
+                Label:
+                    text: "Your playlist tracks are"
+                    font_name: "tracksfont/Noto_Sans_JP/static/NotoSansJP-ExtraBold.ttf"
+                    font_size: 28
+                    size_hint: None, None
+                    size: self.texture_size
+                    pos_hint: {'x': 0.05, 'y': 0.9}
+                    color: 0, 0, 0, 1
+
+                Image:
+                    source: 'images/pl base.png'
+                    allow_stretch: True
+                    keep_ratio: False
+                    size_hint: None,None
+                    size: 950, 580
+                    pos_hint: {'x':0.05, 'y': 0.59}
+
+                Image:
+                    source: 'images/Ellipse 3.png'
+                    allow_stretch: True
+                    keep_ratio: False
+                    size_hint: None,None
+                    size: 282, 265
+                    pos_hint: {'x':0.78, 'y': 0.77}
+
+                Image:
+                    source: 'images/Ellipse 4.png'
+                    allow_stretch: True
+                    keep_ratio: False
+                    size_hint: None,None
+                    size: 282, 265
+                    pos_hint: {'x':0.62, 'y': 0.58}
+
+                Image:
+                    source: 'images/Ellipse 5.png'
+                    allow_stretch: True
+                    keep_ratio: False
+                    size_hint: None,None
+                    size: 282, 265
+                    pos_hint: {'x':0.78, 'y': 0.45}

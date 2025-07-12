@@ -48,6 +48,7 @@ def start_server():
 class MainApp(MDApp):
     about_dialog = None
     contact_dialog = None
+    display_name = StringProperty("")
     
     def build(self):
         load_dotenv()
@@ -56,6 +57,7 @@ class MainApp(MDApp):
         self.client_id = os.getenv("CLIENT_ID")
         self.client_secret = os.getenv("CLIENT_SECRET")
         self.redirect_url = "http://localhost:8080/callback"
+        self.sp = None
         self.scope = (
             "user-top-read "
             "user-follow-read "
@@ -87,16 +89,6 @@ class MainApp(MDApp):
 
         user_data = self.sp.current_user()
         self.display_name = user_data['display_name']
-
-        screen1 = self.sm.get_screen("screen1")
-        screen2 = self.sm.get_screen("screen2")
-        dashboard = self.sm.get_screen("dashboard")
-
-        screen1.ids.username1.text = self.display_name
-        screen2.ids.username2.text = self.display_name
-        dashboard.ids.username3.text = self.display_name
-
-        self.sm.current = "screen1"
     
     #------------------POP UP BOX FOR ABOUT US AND CONTACT US---------------
     def show_about_us(self):
@@ -188,12 +180,26 @@ class MainApp(MDApp):
 
         #---------------------------SETTING THE REDIRECT RESPONSE HERE-----------------------------
         self.login.redirect_response = redirect_response_url
+        
         try:
             token = self.login.fetchingAccessToken()
             self.access_token = token
+            
+            self.login_user()
+            
+            for screen_name in ["dashboard", "screen1", "screen2", "screen3", "aiscreen"]:
+                try:
+                    screen = self.sm.get_screen(screen_name)
+                    screen.ids.displayname_label.text = self.display_name
+                
+                except Exception as e:
+                    print(f"Could not update displayname_label for {screen_name}: {e}")
+            
             self.root.current = "dashboard"
+            
         except Exception as e:
             print(f"\033[31mError fetching token:\033[0m {e}")
+
 
     def enterMood(self, selected_mood):
         self.selected_mood = selected_mood
@@ -510,6 +516,27 @@ class MainApp(MDApp):
         except Exception as e:
             print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
     
+    def getAIrecommendations(self):
+        screen = self.sm.get_screen("screen3")
+        
+        if self.sp is None:
+            print("Spotify client not found. Logging in...")
+            return
+        
+        try:
+            screen.ids.tracks_container.clear_widgets()
+            result = self.sp.current_user_playlists()
+
+            for playlist in result['items']:
+                track_card = PlaylistsDisplayTrackCard()  
+                track_card.ids.curr_playlists.text = f"{playlist['name']}"
+                track_card.ids.songcounttext.text = f"songs: {playlist['tracks']['total']}"
+                
+                screen.ids.tracks_container.add_widget(track_card)
+        
+        except Exception as e:
+            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+    
 class Login:
     def __init__(self, client_id, client_secret):
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -539,15 +566,22 @@ class Login:
         else:
             raise ValueError(f"\033[31mError: No token has been fetched. Please Login...\033[0m")
 
-
+#------------------------------SCREENS--------------------------------------
 class Dashboard(Screen):
     pass
 class Screen1(Screen):
     pass
 class Screen2(Screen):
     pass
+
 class Screen3(Screen):
+    def on_enter(self):
+        app = MDApp.get_running_app()
+        app.getAIrecommendations()
+        
+class AIscreen(Screen):
     pass
+        
 class TrackCard(BoxLayout):
     pass
 class UserDetailsTrackCard(BoxLayout):
@@ -556,10 +590,13 @@ class artistsFollowedTrackCard(BoxLayout):
     pass
 class recentlyPlayedTrackCard(BoxLayout):
     pass
+class PlaylistsDisplayTrackCard(BoxLayout):
+    pass
 
 class WindowManager(ScreenManager):
     pass
-    
+  
+#------------------------HOVER ANIMATIONS--------------------------------
 class HoverButton(Button, HoverBehavior):
     radius = ListProperty([18])
     bg_color = ListProperty([0.384, 0.141, 0.353, 1])
