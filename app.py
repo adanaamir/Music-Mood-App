@@ -4,6 +4,7 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.properties import StringProperty
+from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.animation import Animation
 from functools import partial
@@ -25,7 +26,8 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivymd.toast import toast
 from kivy.graphics import PushMatrix, PopMatrix, Scale
-
+from numpy import dot
+from numpy.linalg import norm
 #-----------------------------------flask for redirecting------------------------------------------------
 app = Flask(__name__)
 redirect_response_url = None
@@ -518,25 +520,79 @@ class MainApp(MDApp):
     
     def getAIrecommendations(self):
         screen = self.sm.get_screen("screen3")
-        
+
         if self.sp is None:
             print("Spotify client not found. Logging in...")
             return
-        
+
         try:
             screen.ids.tracks_container.clear_widgets()
             result = self.sp.current_user_playlists()
 
             for playlist in result['items']:
-                track_card = PlaylistsDisplayTrackCard()  
+                track_card = PlaylistsDisplayTrackCard()
                 track_card.ids.curr_playlists.text = f"{playlist['name']}"
                 track_card.ids.songcounttext.text = f"songs: {playlist['tracks']['total']}"
-                
+
+                pid = playlist['id']
+                pname = playlist['name']
+
+                track_card.ids['enlargeHoverCard'] = track_card.ids.get('enlargeHoverCard')
+
+                track_card.ids['enlargeHoverCard'].bind(on_release=lambda instance, pid=pid, pname=pname: self.open_playlist(pid, pname))
                 screen.ids.tracks_container.add_widget(track_card)
-        
+
         except Exception as e:
-            print(f"\033[31mAn Error occured while fetching followed artists {e}\033[0m")
+            print(f"\033[31mAn Error occurred while fetching playlists: {e}\033[0m")
+
+    def open_playlist(self, pid, pname):
+        aiscreen = self.sm.get_screen('aiscreen')
+        aiscreen.selected_playlist_id = pid
+        aiscreen.selected_playlist_name = pname
+        aiscreen.load_playlist_tracks(pid, pname)
+        self.sm.current = 'aiscreen'
+        
+    def CosineSimilarity(self):
+        track_ids = [track['id'] for track in self.tracks_list]
+        audio_features = sp.audio_features(track_ids)
+        
+        song_vectors = {}
+        for i, features in enumerate(audio_features):
+            if features is None: 
+                continue
+            vector = [
+                features['danceability'],
+                features['energy'],
+                features['valence'],
+                features['tempo'],
+                features['acousticness'],
+                features['instrumentalness']         
+            ] 
+            song_vectors[track_ids[i]] = vector
+            
+    def cosine_similarity(a, b):
+        return dot(a, b) / (norm(a) * norm(b))
     
+    recommendations = {}
+    
+    for id1, vec1 in song_vectors.items():
+        sim_scores = []
+        for id2, vec2 in song_vectors.items():
+            if id1 == id2:
+                continue
+            score = cosine_similarity(vec1, vec2)
+            sim_scores.append((id2, score))
+            
+        sim_scores.sort(key=lambda x: x[1], reverse=True)
+        top_similar = [item[0] for item in sim_scores[:5]]
+        recommendations[id1] = top_similar
+        
+    def showCosineRec(self, selected_track_id):
+        similar_ids = recommendations.get(selected_track_id, [])
+        for sid in similar_ids:
+            print("Recommended:", track_name_map[sid])
+            
+
 class Login:
     def __init__(self, client_id, client_secret):
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -580,7 +636,52 @@ class Screen3(Screen):
         app.getAIrecommendations()
         
 class AIscreen(Screen):
-    pass
+    tracks_list = ListProperty([])
+    selected_playlist_id = StringProperty("")
+    selected_playlist_name = StringProperty("")
+    
+    def load_playlist_tracks(self, playlist_id, playlist_name):
+        all_tracks = []
+        offset = 0
+        sp = MDApp.get_running_app().sp
+
+        while True:
+            result = sp.playlist_tracks(playlist_id, limit=100, offset=offset)
+            items = result.get("items", [])
+            if not items:
+                break
+
+            for item in items:
+                track = item["track"]
+                name = track["name"]
+                artists = ", ".join([a["name"] for a in track["artists"]])
+                all_tracks.append(f"{name} - {artists}")
+            offset += len(items)
+
+        self.tracks_list = all_tracks
+        self.displayTracks()
+
+    def displayTracks(self):
+        container = self.ids.tracks_container
+        container.clear_widgets()
+
+        for track in self.tracks_list:
+            label = Label(
+                text=track,
+                size_hint_y=None,
+                height=55,
+                halign='left',
+                valign='middle',
+                font_size=22,
+                color=(0.678, 0.129, 0.278, 1),
+                text_size=(850, 55),
+                font_name="tracksfont/Noto_Sans_JP/static/NotoSansJP-Bold.ttf"
+            )
+            label.bind(
+                texture_size=lambda instance, size: setattr(instance, 'height', size[1]),
+                size=label.setter('text_size')
+            )
+            container.add_widget(label)        
         
 class TrackCard(BoxLayout):
     pass

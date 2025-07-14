@@ -1387,12 +1387,12 @@ WindowManager:
         size: root.size
 
         EnlargeHover:
+            id: enlargeHoverCard
             source: "images/playlist card.png"  
             size: self.parent.size
             pos: self.parent.pos
             allow_stretch: True
             keep_ratio: False
-            on_release: app.root.current = 'aiscreen'
 
             BoxLayout:
                 orientation: 'vertical'
@@ -1650,6 +1650,21 @@ WindowManager:
                     size: 950, 580
                     pos_hint: {'x':0.05, 'y': 0.59}
 
+                ScrollView:
+                    size_hint: None, None
+                    size: 910, 500
+                    pos_hint: {'x': 0.068, 'y': 0.62}
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    
+                    BoxLayout:
+                        id: tracks_container
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: 10
+                        padding: [10, 10, 10, 10]
+
                 Image:
                     source: 'images/Ellipse 3.png'
                     allow_stretch: True
@@ -1673,3 +1688,9 @@ WindowManager:
                     size_hint: None,None
                     size: 282, 265
                     pos_hint: {'x':0.78, 'y': 0.45}
+
+                EnlargeHover:
+                    source: 'images/startAI.png'
+                    size_hint: None,None
+                    size: 300, 84
+                    pos_hint: {'x':0.2, 'y': 0.52}
